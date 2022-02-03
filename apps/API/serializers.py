@@ -7,11 +7,22 @@ class CustomerSerializer(ModelSerializer):
 
     class Meta:
         model = Customer
-        fields = ('first_name', 'last_came', 'phone', 'email', 'company')
-        # validators = [
-        #     UniqueTogetherValidator(queryset=Customer.objects.all(),
-        #                             fields=['email'],
-        #                             message= 'email already associated with '
-        #                                      'an existing customer'
-        #                     )
-        # ]
+        fields = (
+            'id',
+            'first_name',
+            'last_name',
+            'phone',
+            'mobile',
+            'email',
+            'company',
+            'date_created',
+            'date_updated'
+        )
+
+        validators = [
+            UniqueTogetherValidator(queryset=Customer.objects.all(),
+                                    fields=['email'],
+                                    message= 'email already associated with '
+                                             'an existing customer'
+                            )
+        ]
