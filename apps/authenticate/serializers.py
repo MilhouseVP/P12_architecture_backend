@@ -17,12 +17,6 @@ class DetailCustomUserSerializer(ModelSerializer):
         fields = ('id', 'first_name', 'last_name', 'email', 'phone', 'mobile')
 
 
-class DetailCustomUserSerializer(ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ('first_name', 'last_name', 'email', 'phone', 'mobile')
-
-
 class RegistrationSerializer(ModelSerializer):
     email = serializers.EmailField(
         required=True,

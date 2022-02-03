@@ -17,28 +17,22 @@ class Customer(models.Model):
                                      null=True)
     existing = models.BooleanField(default=False)
 
-    def update_time(self):
-        pass
-
 
 class Contract(models.Model):
     sale_contact = models.ForeignKey(to=User, on_delete=models.SET_NULL,
                                      null=True)
     client = models.ForeignKey(to=Customer, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(default=date_created)
+    date_updated = models.DateTimeField(auto_now=True)
     status = models.BooleanField(default=True)
     amount = models.IntegerField()
-    payement_due = models.DateTimeField()
-
-    def update_time(self):
-        pass
+    payement_due = models.DateField()
 
 
 class Event(models.Model):
     customer = models.ForeignKey(to=Customer, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(default=date_created)
+    date_updated = models.DateTimeField(auto_now=True)
     support_contact = models.ForeignKey(to=User, on_delete=models.SET_NULL,
                                         null=True)
     event_status = models.ForeignKey(to=Contract, on_delete=models.CASCADE)
