@@ -5,10 +5,22 @@ from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser
 
 
-class CustomUserSerializer(ModelSerializer):
+class ListCustomUserSerializer(ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('username', 'first_name', 'last_name', 'role')
+        fields = ('id', 'first_name', 'last_name', 'email')
+
+
+class DetailCustomUserSerializer(ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('id', 'first_name', 'last_name', 'email', 'phone', 'mobile')
+
+
+class DetailCustomUserSerializer(ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('first_name', 'last_name', 'email', 'phone', 'mobile')
 
 
 class RegistrationSerializer(ModelSerializer):
