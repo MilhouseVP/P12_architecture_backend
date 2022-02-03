@@ -53,7 +53,9 @@ class ListCustomersSerializer(ListSaleMixin, ModelSerializer):
 
     class Meta:
         model = Customer
-        fields = ('id', 'company', 'first_name', 'last_name', 'sale_contact')
+        fields = (
+            'id', 'company', 'first_name', 'last_name', 'sale_contact',
+            'existing')
 
 
 class DetailCustomersSerializer(SaleMixin, ModelSerializer):
@@ -85,3 +87,36 @@ class DetailContractSerializer(SaleMixin, ModelSerializer):
         model = Contract
         fields = '__all__'
 
+
+class CreateEventSerializer(ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('customer', 'support_contact', 'event_status', 'attendees',
+                  'event_date', 'note')
+
+
+class ListEventSerializer(ModelSerializer):
+    support_contact = SerializerMethodField()
+
+    class Meta:
+        model = Event
+        fields = (
+        'id', 'event_status', 'support_contact', 'event_date', 'attendees')
+
+    def get_support_contact(self, instance):
+        support = instance.support_contact
+        serializer = ListCustomUserSerializer(support)
+        return serializer.data
+
+
+class DetailEventSerializer(ModelSerializer):
+    support_contact = SerializerMethodField()
+
+    class Meta:
+        model = Event
+        fields = '__all__'
+
+    def get_support_contact(self, instance):
+        support = instance.support_contact
+        serializer = DetailCustomUserSerializer(support)
+        return serializer.data

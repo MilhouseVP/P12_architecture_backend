@@ -25,6 +25,7 @@ from rest_framework import routers
 router = routers.SimpleRouter()
 router.register('customers', APIviews.CustomersViewset, basename='customers')
 router.register('contracts', APIviews.ContractViewset, basename='contracts')
+router.register('events', APIviews.EventViewset, basename='events')
 
 
 urlpatterns = [

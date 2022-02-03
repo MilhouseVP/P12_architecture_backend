@@ -29,3 +29,11 @@ class ContractViewset(SerializerMixin, ModelViewSet):
     def get_queryset(self):
         return Contract.objects.all()
 
+
+class EventViewset(SerializerMixin, ModelViewSet):
+    serializer_class = ListEventSerializer
+    create_serializer_class = CreateEventSerializer
+    detail_serializer_class = DetailEventSerializer
+
+    def get_queryset(self):
+        return Event.objects.all()
