@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from apps.API.models import Customer
 from rest_framework.validators import UniqueTogetherValidator
 
@@ -16,7 +16,9 @@ class CustomerSerializer(ModelSerializer):
             'email',
             'company',
             'date_created',
-            'date_updated'
+            'date_updated',
+            'sale_contact'
+
         )
 
         validators = [

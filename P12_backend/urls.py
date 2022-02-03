@@ -17,7 +17,10 @@ from django.contrib import admin
 from django.urls import path, include
 from apps.API.models import Customer, Contract, Event
 from apps.authenticate.models import CustomUser
+from apps.authenticate.views import RegisterView
 import apps.API.views as APIviews
+from rest_framework_simplejwt.views import TokenObtainPairView, \
+    TokenRefreshView
 
 from rest_framework import routers
 
@@ -27,5 +30,10 @@ router.register('customers', APIviews.CustomersViewset, basename='customers')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
+    path('api/login/', TokenObtainPairView.as_view(),
+         name='token_obtains_pairs'),
+    path('api/login/refresh/', TokenRefreshView.as_view(),
+         name='refresh_token'),
+    path('api/signup/', RegisterView.as_view(), name='auth_register')
 ]
