@@ -7,6 +7,7 @@ import P12_backend.permissions as perms
 
 class ApiViewsetMixin:
     serializer_actions = ['retrieve', 'update', 'partial_update']
+
     read_actions = ['list', 'retrieve']
     edit_actions = ['update', 'partial_update']
 
@@ -14,9 +15,10 @@ class ApiViewsetMixin:
     create_serializer_class = None
     detail_serializer_class = None
 
-    edit_permissions = []
+    permission_classes = [IsAuthenticated]
+    edit_permissions = [IsAuthenticated, perms.IsSaleReferee]
+    create_permissions = [IsAuthenticated, perms.IsSales]
     delete_permissions = [IsAuthenticated, perms.IsManager]
-    create_permissions = []
 
     def get_serializer_class(self):
         if self.action in self.serializer_actions:
@@ -40,10 +42,6 @@ class CustomersViewset(ApiViewsetMixin, ModelViewSet):
     create_serializer_class = CreateCustomerSerializer
     detail_serializer_class = DetailCustomersSerializer
 
-    permission_classes = [IsAuthenticated]
-    edit_permissions = [IsAuthenticated, perms.IsSaleReferee]
-    create_permissions = [IsAuthenticated, perms.IsSales]
-
     def get_queryset(self):
         return Customer.objects.all()
 
@@ -52,10 +50,6 @@ class ContractViewset(ApiViewsetMixin, ModelViewSet):
     serializer_class = ListContractSerializer
     create_serializer_class = CreateContractSerializer
     detail_serializer_class = DetailContractSerializer
-
-    edit_permissions = [
-        IsAuthenticated & (perms.IsManager | perms.IsSaleReferee)]
-    create_permissions = [IsAuthenticated & (perms.IsManager | perms.IsSales)]
 
     def get_queryset(self):
         return Contract.objects.all()
@@ -66,9 +60,8 @@ class EventViewset(ApiViewsetMixin, ModelViewSet):
     create_serializer_class = CreateEventSerializer
     detail_serializer_class = DetailEventSerializer
 
-    edit_permissions = [
-        IsAuthenticated & (perms.IsManager | perms.IsSupportReferee)]
-    create_permissions = [IsAuthenticated & (perms.IsManager | perms.IsSales)]
+    edit_permissions = [IsAuthenticated, perms.IsSupportReferee]
+    create_permissions = [IsAuthenticated, perms.IsSales]
 
     def get_queryset(self):
         return Event.objects.all()
