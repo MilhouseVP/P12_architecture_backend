@@ -1,39 +1,74 @@
 from rest_framework.viewsets import ModelViewSet
 from .serializers import *
 from .models import Customer, Contract
+from rest_framework.permissions import IsAuthenticated
+import P12_backend.permissions as perms
 
 
-class SerializerMixin:
+class ApiViewsetMixin:
+    serializer_actions = ['retrieve', 'update', 'partial_update']
+    read_actions = ['list', 'retrieve']
+    edit_actions = ['update', 'partial_update']
+
+    serializer_class = None
+    create_serializer_class = None
+    detail_serializer_class = None
+
+    edit_permissions = []
+    delete_permissions = [IsAuthenticated, perms.IsManager]
+    create_permissions = []
+
     def get_serializer_class(self):
-        if self.action == 'retrieve':
+        if self.action in self.serializer_actions:
             return self.detail_serializer_class
         elif self.action == 'create':
             return self.create_serializer_class
         return super().get_serializer_class()
 
+    def get_permissions(self):
+        if self.action in self.edit_actions:
+            self.permission_classes = self.edit_permissions
+        elif self.action =='create':
+            self.permission_classes = self.create_permissions
+        elif self.action == 'destroy':
+            self.permission_classes = self.delete_permissions
+        return super().get_permissions()
 
-class CustomersViewset(SerializerMixin, ModelViewSet):
+
+class CustomersViewset(ApiViewsetMixin, ModelViewSet):
     serializer_class = ListCustomersSerializer
     create_serializer_class = CreateCustomerSerializer
     detail_serializer_class = DetailCustomersSerializer
+
+    permission_classes = [IsAuthenticated]
+    edit_permissions = [IsAuthenticated, perms.IsSaleReferee]
+    create_permissions = [IsAuthenticated, perms.IsSales]
 
     def get_queryset(self):
         return Customer.objects.all()
 
 
-class ContractViewset(SerializerMixin, ModelViewSet):
+class ContractViewset(ApiViewsetMixin, ModelViewSet):
     serializer_class = ListContractSerializer
-    create_serializer_clase = CreateContractSerializer
+    create_serializer_class = CreateContractSerializer
     detail_serializer_class = DetailContractSerializer
+
+    edit_permissions = [
+        IsAuthenticated & (perms.IsManager | perms.IsSaleReferee)]
+    create_permissions = [IsAuthenticated & (perms.IsManager | perms.IsSales)]
 
     def get_queryset(self):
         return Contract.objects.all()
 
 
-class EventViewset(SerializerMixin, ModelViewSet):
+class EventViewset(ApiViewsetMixin, ModelViewSet):
     serializer_class = ListEventSerializer
     create_serializer_class = CreateEventSerializer
     detail_serializer_class = DetailEventSerializer
+
+    edit_permissions = [
+        IsAuthenticated & (perms.IsManager | perms.IsSupportReferee)]
+    create_permissions = [IsAuthenticated & (perms.IsManager | perms.IsSales)]
 
     def get_queryset(self):
         return Event.objects.all()
