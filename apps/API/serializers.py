@@ -43,9 +43,13 @@ class CreateCustomerSerializer(ModelSerializer):
                                             'an existing customer'
                                     )
         ]
-    # TODO: save user id as sale contact
-    # def create(self, instance):
-    #     pass
+
+    def create(self, validated_data ):
+        if not 'mobile' in validated_data:
+            validated_data['mobile'] = None
+        user = self.context['request'].user
+        validated_data['sale_contact'] = user
+        return Customer.objects.create(**validated_data)
 
 
 class ListCustomersSerializer(ListSaleMixin, ModelSerializer):
@@ -69,7 +73,15 @@ class DetailCustomersSerializer(SaleMixin, ModelSerializer):
 class CreateContractSerializer(ModelSerializer):
     class Meta:
         model = Contract
-        fields = ('sale_contact', 'client', 'amount', 'payement_due')
+        fields = ('client', 'amount', 'payement_due')
+
+    def create(self, validated_data ):
+        print(validated_data)
+        user = self.context['request'].user
+        # client = Customer.objects.get(id=validated_data['client'])
+        validated_data['sale_contact'] = user
+        # validated_data['client'] = client.id
+        return Contract.objects.create(**validated_data)
 
 
 class ListContractSerializer(ListSaleMixin, ModelSerializer):

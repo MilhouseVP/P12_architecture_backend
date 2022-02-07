@@ -2,11 +2,6 @@ from rest_framework.permissions import BasePermission
 from apps.authenticate.models import CustomUser
 
 
-# TODO: essayer de faire un mixin
-# class PermissionMixin:
-#     pass
-
-
 class IsManager(BasePermission):
     def has_permission(self, request, view):
         user = CustomUser.objects.get(id=request.user.id)
