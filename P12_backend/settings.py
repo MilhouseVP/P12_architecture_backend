@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'apps.API',
-    'apps.authenticate'
+    'apps.authenticate',
+    'apps.front'
 ]
 
 MIDDLEWARE = [
@@ -133,6 +134,10 @@ STATICFILES_DIRS = [BASE_DIR.joinpath('static/')]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'authenticate.CustomUser'
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = LOGIN_URL
 
 #API pagination
 REST_FRAMEWORK = {

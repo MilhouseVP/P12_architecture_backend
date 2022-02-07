@@ -17,9 +17,10 @@ from django.contrib import admin
 from django.urls import path, include
 from apps.authenticate.views import RegisterView, UserViewset
 import apps.API.views as APIviews
+from apps.front import views as front
 from rest_framework_simplejwt.views import TokenObtainPairView, \
     TokenRefreshView
-
+from django.contrib.auth.views import LoginView, LogoutView
 from rest_framework import routers
 
 router = routers.SimpleRouter()
@@ -36,5 +37,10 @@ urlpatterns = [
          name='token_obtains_pairs'),
     path('api/login/refresh/', TokenRefreshView.as_view(),
          name='refresh_token'),
-    path('api/signup/', RegisterView.as_view(), name='auth_register')
+    path('api/signup/', RegisterView.as_view(), name='auth_register'),
+    path('', LoginView.as_view(template_name='front/login.html',
+                               redirect_authenticated_user=True),
+         name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('home/', front.home, name='home'),
 ]
