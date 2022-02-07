@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from apps.authenticate.views import RegisterView
+from apps.authenticate.views import RegisterView, UserViewset
 import apps.API.views as APIviews
 from rest_framework_simplejwt.views import TokenObtainPairView, \
     TokenRefreshView
@@ -26,6 +26,7 @@ router = routers.SimpleRouter()
 router.register('customers', APIviews.CustomersViewset, basename='customers')
 router.register('contracts', APIviews.ContractViewset, basename='contracts')
 router.register('events', APIviews.EventViewset, basename='events')
+router.register('users', UserViewset, basename='users')
 
 
 urlpatterns = [

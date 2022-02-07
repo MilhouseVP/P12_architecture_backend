@@ -78,9 +78,7 @@ class CreateContractSerializer(ModelSerializer):
     def create(self, validated_data ):
         print(validated_data)
         user = self.context['request'].user
-        # client = Customer.objects.get(id=validated_data['client'])
         validated_data['sale_contact'] = user
-        # validated_data['client'] = client.id
         return Contract.objects.create(**validated_data)
 
 
