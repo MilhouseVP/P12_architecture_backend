@@ -42,5 +42,10 @@ urlpatterns = [
                                redirect_authenticated_user=True),
          name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    # path('get_token/', front.home, name='get_token'),
     path('home/', front.home, name='home'),
+    path('customers/', front.customers, name='customers'),
+    path('contracts/', front.contracts, name='contracts'),
+    path('events/', front.events, name='events'),
+    path('projects/', front.projects, name='projects'),
 ]

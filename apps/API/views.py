@@ -3,9 +3,13 @@ from .serializers import *
 from .models import Customer, Contract
 from rest_framework.permissions import IsAuthenticated
 import P12_backend.permissions as perms
+import logging
+
+logger = logging.getLogger('django_file')
 
 
 class ApiViewsetMixin:
+    # logger.warning()
     serializer_actions = ['retrieve', 'update', 'partial_update']
 
     read_actions = ['list', 'retrieve']

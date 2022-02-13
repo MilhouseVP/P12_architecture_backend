@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>EpicEvents</title>
+        <link rel="stylesheet" href="{% static 'style.css' %}">
+    </head>
+    <body>
+    <nav class="nav">
+        <div class="nav__title">
+            <h1>EpicEvents</h1>
+        </div>
+        <ul class="nav__list">
+        {% if user.is_authenticated %}
+            <li><a class ="nav__item" href="{% url 'customers' %}">Clients</a></li>
+            <li><a class ="nav__item" href="{% url 'contracts' %}">Contracts</a></li>
+            <li><a class ="nav__item" href="{% url 'events' %}">Evènements</a></li>
+{#                <li><a class ="nav__item" href="{% url 'account' %}">Mon compte</a></li>#}
+            <li><a class ="nav__item" href="{% url 'projects' %}">Mes projets</a></li>
+            <li><a class ="nav__item" href="{% url 'logout' %}">Se Déconnecter</a></li>
+        {% endif %}
+        </ul>
+    </nav>
+        {% block content %}
+
+        {% endblock %}
+    </body>
+</html>
