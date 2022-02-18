@@ -3,13 +3,9 @@ from .serializers import *
 from .models import Customer, Contract
 from rest_framework.permissions import IsAuthenticated
 import P12_backend.permissions as perms
-import logging
-
-logger = logging.getLogger('django_file')
 
 
 class ApiViewsetMixin:
-    # logger.warning()
     serializer_actions = ['retrieve', 'update', 'partial_update']
 
     read_actions = ['list', 'retrieve']
@@ -45,6 +41,7 @@ class CustomersViewset(ApiViewsetMixin, ModelViewSet):
     serializer_class = ListCustomersSerializer
     create_serializer_class = CreateCustomerSerializer
     detail_serializer_class = DetailCustomersSerializer
+    filter_fields = ['email', 'last_name', 'company']
 
     def get_queryset(self):
         return Customer.objects.all()
@@ -54,6 +51,8 @@ class ContractViewset(ApiViewsetMixin, ModelViewSet):
     serializer_class = ListContractSerializer
     create_serializer_class = CreateContractSerializer
     detail_serializer_class = DetailContractSerializer
+    # TODO: filtrer avec nom client, email client, date du contrat, montant
+    filter_fields = ['sale_contact', 'customer']
 
     def get_queryset(self):
         return Contract.objects.all()
@@ -66,6 +65,9 @@ class EventViewset(ApiViewsetMixin, ModelViewSet):
 
     edit_permissions = [IsAuthenticated, perms.IsSupportReferee]
     create_permissions = [IsAuthenticated, perms.IsSales]
+
+    # TODO: filtrer : nom client, email client, date evenement
+    filter_fields =['customer', 'support_contact']
 
     def get_queryset(self):
         return Event.objects.all()

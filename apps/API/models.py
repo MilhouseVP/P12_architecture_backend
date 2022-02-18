@@ -21,7 +21,7 @@ class Customer(models.Model):
 class Contract(models.Model):
     sale_contact = models.ForeignKey(to=User, on_delete=models.SET_NULL,
                                      null=True)
-    client = models.ForeignKey(to=Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(to=Customer, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     status = models.BooleanField(default=False)
