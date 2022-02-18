@@ -1,8 +1,9 @@
 from rest_framework.viewsets import ModelViewSet
 from .serializers import *
-from .models import Customer, Contract
+from .models import Customer, Contract, Event
 from rest_framework.permissions import IsAuthenticated
 import P12_backend.permissions as perms
+from .api_filters import *
 
 
 class ApiViewsetMixin:
@@ -51,8 +52,7 @@ class ContractViewset(ApiViewsetMixin, ModelViewSet):
     serializer_class = ListContractSerializer
     create_serializer_class = CreateContractSerializer
     detail_serializer_class = DetailContractSerializer
-    # TODO: filtrer avec nom client, email client, date du contrat, montant
-    filter_fields = ['sale_contact', 'customer']
+    filterset_class = ContractFilter
 
     def get_queryset(self):
         return Contract.objects.all()
@@ -66,8 +66,7 @@ class EventViewset(ApiViewsetMixin, ModelViewSet):
     edit_permissions = [IsAuthenticated, perms.IsSupportReferee]
     create_permissions = [IsAuthenticated, perms.IsSales]
 
-    # TODO: filtrer : nom client, email client, date evenement
-    filter_fields =['customer', 'support_contact']
+    filterset_class = EventFilter
 
     def get_queryset(self):
         return Event.objects.all()

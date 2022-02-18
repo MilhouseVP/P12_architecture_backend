@@ -73,7 +73,7 @@ class DetailCustomersSerializer(SaleMixin, ModelSerializer):
 class CreateContractSerializer(ModelSerializer):
     class Meta:
         model = Contract
-        fields = ('client', 'amount', 'payement_due')
+        fields = ('customer', 'amount', 'payement_due')
 
     def create(self, validated_data ):
         print(validated_data)
@@ -87,7 +87,7 @@ class ListContractSerializer(ListSaleMixin, ModelSerializer):
 
     class Meta:
         model = Contract
-        fields = ('id', 'client', 'status', 'sale_contact')
+        fields = ('id', 'customer', 'status', 'sale_contact')
 
 
 class DetailContractSerializer(SaleMixin, ModelSerializer):
