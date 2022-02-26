@@ -7,7 +7,8 @@ class IsManager(BasePermission):
         user = CustomUser.objects.get(id=request.user.id)
         if user.role == 'manager':
             return True
-        return False
+        else:
+            return False
 
 
 class IsSales(BasePermission):
