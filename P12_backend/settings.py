@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-mg9k5&1m67e^(1g(k^apm&mq!45e1lmy1rs=dm0&8sof^lkqx7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -156,30 +156,30 @@ SIMPLE_JWT = {
 
     'ACCESS_TOKEN_LIFETIME': timedelta(days=10)
 }
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {request.method} '
-                      '{request.user.username} {message}',
-            'style': '{',
-        },
-    },
-    'handlers': {
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': 'debug.log',
-            'formatter': 'verbose',
-            'level': 'WARNING',
-        },
-    },
-    'loggers': {
-        'root': {
-            'handlers': ['file'],
-            'propagate': False,
-        },
-    },
-}
-
+# TODO: decommenter à la fin du developpement
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'verbose': {
+#             'format': '{levelname} {asctime} {request.method} '
+#                       '{request.user.username} {message}',
+#             'style': '{',
+#         },
+#     },
+#     'handlers': {
+#         'file': {
+#             'class': 'logging.FileHandler',
+#             'filename': 'debug.log',
+#             'formatter': 'verbose',
+#             'level': 'WARNING',
+#         },
+#     },
+#     'loggers': {
+#         'root': {
+#             'handlers': ['file'],
+#             'propagate': False,
+#         },
+#     },
+# }
+#

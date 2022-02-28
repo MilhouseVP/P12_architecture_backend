@@ -20,7 +20,8 @@ import apps.API.views as APIviews
 from apps.front import views as front
 from rest_framework_simplejwt.views import TokenObtainPairView, \
     TokenRefreshView
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LogoutView
+from apps.front.views import LoginView
 from rest_framework import routers
 
 router = routers.SimpleRouter()
