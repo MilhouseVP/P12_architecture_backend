@@ -1,6 +1,45 @@
 html {
-  background-color: #DDD;
+  background-color: #EEE;
   height: 100%;
+}
+
+body {
+  height: 90%;
+  border: solid 1px;
+  width: 80%;
+  margin: auto;
+  margin-top: 20px;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  top: 0;
+  height: 10%;
+  border-bottom-color: black;
+  border-bottom: solid 2px;
+}
+.nav__title {
+  right: 50%;
+  margin-left: 45%;
+}
+.nav__list li {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.content {
+  height: 90%;
+  overflow: scroll;
+  text-align: center;
+}
+
+.box {
+  border: solid 1px;
+}
+.box p {
+  margin-left: 10px;
 }
 
 /*# sourceMappingURL=style.css.map */

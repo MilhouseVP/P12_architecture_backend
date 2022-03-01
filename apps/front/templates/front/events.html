@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>tout les événements</h2>
+{% for event in events %}
+<div class="box">
+    <p>Client : {{ event.customer.company }}</p>
+    <p>Jauge : {{ event.attendees }}</p>
+    <p>Date : {{ event.event_date }}</p>
+    <p>Contact support : {{ event.support_contact.email }}</p>
+<p>Note : {{ event.note }}</p>
+</div>
+{% endfor %}
+{% endblock %}

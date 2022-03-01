@@ -2,6 +2,11 @@
 {% block content %}
 <h2>tout les clients</h2>
 {% for client in clients %}
-    <p>{{ client }}</p>
-    {% endfor %}
+<div class="box">
+    <p>Prénom : {{ client.first_name }}</p>
+    <p>Nom : {{ client.last_name }}</p>
+    <p>Société : {{ client.company }}</p>
+    <p>Déja client : {{ client.existing }}</p>
+</div>
+{% endfor %}
 {% endblock %}
