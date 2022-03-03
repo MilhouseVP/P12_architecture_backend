@@ -19,6 +19,13 @@ class ListSaleMixin:
         return serializer.data
 
 
+class ListCustomerMixin:
+    def get_customer(self, instance):
+        customer = instance.customer
+        serializer = ListCustomersSerializer(customer)
+        return serializer.data
+
+
 class CreateCustomerSerializer(ModelSerializer):
     class Meta:
         model = Customer
@@ -82,12 +89,13 @@ class CreateContractSerializer(ModelSerializer):
         return Contract.objects.create(**validated_data)
 
 
-class ListContractSerializer(ListSaleMixin, ModelSerializer):
+class ListContractSerializer(ListSaleMixin, ModelSerializer, ListCustomerMixin):
     sale_contact = SerializerMethodField()
+    customer = SerializerMethodField()
 
     class Meta:
         model = Contract
-        fields = ('id', 'customer', 'status', 'sale_contact')
+        fields = ('id', 'customer', 'status', 'amount', 'sale_contact')
 
 
 class DetailContractSerializer(SaleMixin, ModelSerializer):
@@ -105,13 +113,14 @@ class CreateEventSerializer(ModelSerializer):
                   'event_date', 'note')
 
 
-class ListEventSerializer(ModelSerializer):
+class ListEventSerializer(ModelSerializer, ListCustomerMixin):
     support_contact = SerializerMethodField()
+    customer = SerializerMethodField()
 
     class Meta:
         model = Event
         fields = (
-        'id', 'event_status', 'support_contact', 'event_date', 'attendees')
+        'id','customer', 'note', 'support_contact', 'event_date', 'attendees')
 
     def get_support_contact(self, instance):
         support = instance.support_contact

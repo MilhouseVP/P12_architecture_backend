@@ -1,6 +1,4 @@
-import requests
 from django.shortcuts import render, redirect
-from apps.API.models import Customer, Contract, Event
 from django.contrib.auth.views import LoginView as BaseLogin
 from django.contrib.auth.decorators import login_required
 import requests
@@ -26,6 +24,12 @@ class LoginView(BaseLogin):
 
 # TODO: delete cookies at logout
 
+def api_mixin(request, endpoint):
+    token = request.COOKIES.get('access')
+    head = {'Authorization': 'Bearer ' + token}
+    data = requests.get(endpoint, headers=head).json()
+    return data
+
 
 @login_required
 def home(request):
@@ -37,28 +41,29 @@ def home(request):
 
 @login_required
 def customers(request):
-    token = request.COOKIES.get('access')
     endpoint = 'http://127.0.0.1:8000/api/customers/'
-    head = {'Authorization': 'Bearer ' + token}
-    data = requests.get(endpoint, headers=head).json()
+    data = api_mixin(request, endpoint)
     context = {'clients': data['results']}
     return render(request, 'front/customers.html', context)
 
 
+@login_required
+def customer(request, customer_id):
+    endpoint = 'http://127.0.0.1:8000/api/customers/' + str(customer_id) + '/'
+    data = api_mixin(request, endpoint)
+    context = {'customer': data}
+    return render(request, 'front/customer_details.html', context)
+
 def contracts(request):
-    token = request.COOKIES.get('access')
     endpoint = 'http://127.0.0.1:8000/api/contracts/'
-    head = {'Authorization': 'Bearer ' + token}
-    data = requests.get(endpoint, headers=head).json()
+    data = api_mixin(request, endpoint)
     context = {'contracts': data['results']}
     return render(request, 'front/contracts.html', context)
 
 
 def events(request):
-    token = request.COOKIES.get('access')
     endpoint = 'http://127.0.0.1:8000/api/events/'
-    head = {'Authorization': 'Bearer ' + token}
-    data = requests.get(endpoint, headers=head).json()
+    data = api_mixin(request, endpoint)
     context = {'events': data['results']}
     return render(request, 'front/events.html', context)
 

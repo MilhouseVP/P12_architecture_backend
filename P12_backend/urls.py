@@ -46,6 +46,7 @@ urlpatterns = [
     path('get_token/', front.home, name='get_token'),
     path('home/', front.home, name='home'),
     path('customers/', front.customers, name='customers'),
+    path('customer/<int:customer_id>/', front.customer, name='customer_detail'),
     path('contracts/', front.contracts, name='contracts'),
     path('events/', front.events, name='events'),
     path('projects/', front.projects, name='projects'),

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ customer.company }}</h2>
+<div class="box">
+    <p>Société : {{ customer.company }}</p>
+    <p>Prénom : {{ customer.first_name }}</p>
+    <p>Nom : {{ customer.last_name }}</p>
+    <p> Téléphone : {{ customer.phone }}</p>
+    <p>Mobile : {{ customer.mobile }}</p>
+    <p>Email : {{ customer.email }}</p>
+    <p>Création : {{ customer.date_created }}</p>
+    <p> Dérnière modification : {{ customer_date_updated }}</p>
+    <p>Déja client : {{ customer.existing }}</p>
+    <p>Contact vente : {{ customer.sale_contact.email }}</p>
+</div>
+{% endblock %}
