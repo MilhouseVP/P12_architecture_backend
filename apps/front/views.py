@@ -54,6 +54,7 @@ def customer(request, customer_id):
     context = {'customer': data}
     return render(request, 'front/customer_details.html', context)
 
+
 @login_required
 def contracts(request):
     endpoint = 'http://127.0.0.1:8000/api/contracts/'
@@ -76,6 +77,14 @@ def events(request):
     data = api_mixin(request, endpoint)
     context = {'events': data['results']}
     return render(request, 'front/events.html', context)
+
+
+@login_required
+def event(request, event_id):
+    endpoint = 'http://127.0.0.1:8000/api/events/' + str(event_id) + '/'
+    data = api_mixin(request, endpoint)
+    context = {'event': data}
+    return render(request, 'front/event_details.html', context)
 
 
 def account(request):

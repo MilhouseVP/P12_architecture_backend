@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>tout les événements</h2>
-{% for event in events %}
+<h2>Détails événement</h2>
 <div class="box">
     <p>Client : {{ event.customer.company }}</p>
     <p>Jauge : {{ event.attendees }}</p>
     <p>Date : {{ event.event_date }}</p>
+    <p>Création : {{ event.date_created }}</p>
+    <p>Modification : {{ event.date_updated }}</p>
+    <a href="{% url 'contract_detail' cont_id=event.event_status %}"><button>Contrat</button></a>
     <p>Contact support : {{ event.support_contact.email }}</p>
     <p>Note : {{ event.note }}</p>
-    <a href="{% url 'event_detail' event_id=event.id %}"><button>Détails</button></a>
 </div>
-{% endfor %}
 {% endblock %}

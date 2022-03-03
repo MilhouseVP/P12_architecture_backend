@@ -127,8 +127,9 @@ class ListEventSerializer(ModelSerializer, ListCustomerMixin):
         return serializer.data
 
 
-class DetailEventSerializer(ModelSerializer):
+class DetailEventSerializer(ModelSerializer, ListCustomerMixin):
     support_contact = SerializerMethodField()
+    customer = SerializerMethodField()
 
     class Meta:
         model = Event
