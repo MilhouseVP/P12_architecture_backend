@@ -98,13 +98,12 @@ class ListContractSerializer(ListSaleMixin, ModelSerializer, ListCustomerMixin):
         fields = ('id', 'customer', 'status', 'amount', 'sale_contact')
 
 
-class DetailContractSerializer(SaleMixin, ModelSerializer):
+class DetailContractSerializer(SaleMixin, ModelSerializer, ListCustomerMixin):
     sale_contact = SerializerMethodField()
 
     class Meta:
         model = Contract
         fields = '__all__'
-
 
 class CreateEventSerializer(ModelSerializer):
     class Meta:

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ contract.company }}</h2>
+<div class="box">
+    <p>Status : {{ contract.status }}</p>
+    <p>Montant : {{ contract.amount }}</p>
+    <p>Date de payement : {{ contract.payement_due }}</p>
+    <p>Création : {{ contract.date_created }}</p>
+    <p> Dérnière modification : {{ contract.date_updated }}</p>
+    <p>Contact vente : {{ contract.sale_contact.email }}</p>
+</div>
+{% endblock %}
