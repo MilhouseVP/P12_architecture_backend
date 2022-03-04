@@ -1,0 +1,9 @@
+{% for user in users %}
+<div class="box">
+    <p>Prénom : {{ user.first_name }}</p>
+    <p>Nom : {{ user.last_name }}</p>
+    <p>Email : {{ user.email }}</p>
+    <p>Role : {{ user.role }}</p>
+    <a href="{% url 'user_detail' user_id=user.id %}"><button>Détails</button></a>
+</div>
+{% endfor %}

@@ -121,3 +121,31 @@ def event(request, event_id):
     else:
         context = {'event': data}
     return render(request, 'front/event_details.html', context)
+
+
+@login_required
+def users(request):
+    if request.user.role != 'manager':
+        return redirect('home')
+    else:
+        endpoint = 'http://127.0.0.1:8000/api/users/'
+        data = api_mixin(request, endpoint)
+        if 'detail' in data:
+            context = {'error': data['detail']}
+        else:
+            context = {'users': data['results']}
+        return render(request, 'front/users.html', context)
+
+
+@login_required
+def user(request, user_id):
+    if request.user.role != 'manager':
+        return redirect('home')
+    else:
+        endpoint = 'http://127.0.0.1:8000/api/users/' + str(user_id) + '/'
+        data = api_mixin(request, endpoint)
+        if 'detail' in data:
+            context = {'error': data['detail']}
+        else:
+            context = {'employee': data}
+        return render(request, 'front/user_details.html', context)

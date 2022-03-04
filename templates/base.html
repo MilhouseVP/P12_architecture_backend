@@ -16,7 +16,9 @@
                 <li><a class ="nav__item" href="{% url 'customers' %}">Clients</a></li>
                 <li><a class ="nav__item" href="{% url 'contracts' %}">Contracts</a></li>
                 <li><a class ="nav__item" href="{% url 'events' %}">Evènements</a></li>
-    {#                <li><a class ="nav__item" href="{% url 'account' %}">Mon compte</a></li>#}
+                {% if user.role == 'manager' %}
+                <li><a class ="nav__item" href="{% url 'users' %}">Utilisateurs</a></li>
+                {% endif %}
                 <li><a class ="nav__item" href="{% url 'home' %}">Mes projets</a></li>
                 <li><a class ="nav__item" href="{% url 'logout' %}">Se Déconnecter</a></li>
             {% endif %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Détails utilisateur</h2>
+<div class="box">
+{% if error %}
+    <p>{{ error.detail }}</p>
+{% endif %}
+{% if employee %}
+    <p>Prénom : {{ employee.first_name }}</p>
+    <p>Nom : {{ employee.last_name }}</p>
+    <p>Email : {{ employee.email }}</p>
+    <p>Téléphone : {{ employee.phone }}</p>
+    <p>Mobile : {{ employee.mobile }}</p>
+    <p>Role : {{ employee.role }}</p>
+{% endif %}
+</div>
+{% endblock %}

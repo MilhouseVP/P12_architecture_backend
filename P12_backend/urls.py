@@ -33,17 +33,20 @@ router.register('users', UserViewset, basename='users')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # API endpoint
     path('api/', include(router.urls)),
     path('api/login/', TokenObtainPairView.as_view(),
          name='token_obtains_pairs'),
     path('api/login/refresh/', TokenRefreshView.as_view(),
          name='refresh_token'),
     path('api/signup/', RegisterView.as_view(), name='auth_register'),
+
+    # Frontend endpoints
     path('', LoginView.as_view(template_name='front/login.html',
                                redirect_authenticated_user=True),
          name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('get_token/', front.home, name='get_token'),
     path('home/', front.home, name='home'),
     path('customers/', front.customers, name='customers'),
     path('customer/<int:customer_id>/', front.customer, name='customer_detail'),
@@ -51,5 +54,6 @@ urlpatterns = [
     path('contract/<int:cont_id>/', front.contract, name='contract_detail'),
     path('events/', front.events, name='events'),
     path('event/<int:event_id>/', front.event, name='event_detail'),
-    # path('projects/', front.projects, name='projects'),
+    path('users/', front.users, name='users'),
+    path('user/<int:user_id>/', front.user, name='user_detail')
 ]

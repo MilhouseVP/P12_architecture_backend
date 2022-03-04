@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>tout les utilisateurs</h2>
+{% if error %}
+    <p>{{ error.detail }}</p>
+{% endif %}
+{% if users %}
+{% include 'front/partials/users_snippet.html' %}
+{% endif %}
+{% endblock %}
