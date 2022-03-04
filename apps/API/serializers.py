@@ -100,6 +100,7 @@ class ListContractSerializer(ListSaleMixin, ModelSerializer, ListCustomerMixin):
 
 class DetailContractSerializer(SaleMixin, ModelSerializer, ListCustomerMixin):
     sale_contact = SerializerMethodField()
+    customer = SerializerMethodField()
 
     class Meta:
         model = Contract

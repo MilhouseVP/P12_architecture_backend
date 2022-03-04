@@ -43,7 +43,10 @@ def home(request):
 def customers(request):
     endpoint = 'http://127.0.0.1:8000/api/customers/'
     data = api_mixin(request, endpoint)
-    context = {'clients': data['results']}
+    if 'detail' in data:
+        context = {'error': data['detail']}
+    else:
+        context = {'clients': data['results']}
     return render(request, 'front/customers.html', context)
 
 
@@ -51,7 +54,10 @@ def customers(request):
 def customer(request, customer_id):
     endpoint = 'http://127.0.0.1:8000/api/customers/' + str(customer_id) + '/'
     data = api_mixin(request, endpoint)
-    context = {'customer': data}
+    if 'detail' in data:
+        context = {'error': data['detail']}
+    else:
+        context = {'customer': data}
     return render(request, 'front/customer_details.html', context)
 
 
@@ -59,7 +65,10 @@ def customer(request, customer_id):
 def contracts(request):
     endpoint = 'http://127.0.0.1:8000/api/contracts/'
     data = api_mixin(request, endpoint)
-    context = {'contracts': data['results']}
+    if 'detail' in data:
+        context = {'error': data['detail']}
+    else:
+        context = {'contracts': data['results']}
     return render(request, 'front/contracts.html', context)
 
 
@@ -67,7 +76,10 @@ def contracts(request):
 def contract(request, cont_id):
     endpoint = 'http://127.0.0.1:8000/api/contracts/' + str(cont_id) + '/'
     data = api_mixin(request, endpoint)
-    context = {'contract': data}
+    if 'detail' in data:
+        context = {'error': data['detail']}
+    else:
+        context = {'contract': data}
     return render(request, 'front/contract_details.html', context)
 
 
@@ -75,7 +87,10 @@ def contract(request, cont_id):
 def events(request):
     endpoint = 'http://127.0.0.1:8000/api/events/'
     data = api_mixin(request, endpoint)
-    context = {'events': data['results']}
+    if 'detail' in data:
+        context = {'error': data['detail']}
+    else:
+        context = {'events': data['results']}
     return render(request, 'front/events.html', context)
 
 
@@ -83,7 +98,10 @@ def events(request):
 def event(request, event_id):
     endpoint = 'http://127.0.0.1:8000/api/events/' + str(event_id) + '/'
     data = api_mixin(request, endpoint)
-    context = {'event': data}
+    if 'detail' in data:
+        context = {'error': data['detail']}
+    else:
+        context = {'event': data}
     return render(request, 'front/event_details.html', context)
 
 

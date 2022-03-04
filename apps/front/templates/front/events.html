@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>tout les événements</h2>
+{% if error %}
+    <p>{{ error.detail }}</p>
+{% endif %}
+{% if events %}
 {% for event in events %}
 <div class="box">
     <p>Client : {{ event.customer.company }}</p>
@@ -11,4 +15,5 @@
     <a href="{% url 'event_detail' event_id=event.id %}"><button>Détails</button></a>
 </div>
 {% endfor %}
+{% endif %}
 {% endblock %}

@@ -2,6 +2,10 @@
 {% block content %}
 <h2>Détails événement</h2>
 <div class="box">
+{% if error %}
+    <p>{{ error.detail }}</p>
+{% endif %}
+{% if event %}
     <p>Client : {{ event.customer.company }}</p>
     <p>Jauge : {{ event.attendees }}</p>
     <p>Date : {{ event.event_date }}</p>
@@ -10,5 +14,6 @@
     <a href="{% url 'contract_detail' cont_id=event.event_status %}"><button>Contrat</button></a>
     <p>Contact support : {{ event.support_contact.email }}</p>
     <p>Note : {{ event.note }}</p>
+{% endif %}
 </div>
 {% endblock %}

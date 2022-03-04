@@ -2,6 +2,10 @@
 {% block content %}
 <h2>Détails client</h2>
 <div class="box">
+{% if error %}
+    <p>{{ error.detail }}</p>
+{% endif %}
+{% if customer %}
     <p>Société : {{ customer.company }}</p>
     <p>Prénom : {{ customer.first_name }}</p>
     <p>Nom : {{ customer.last_name }}</p>
@@ -12,5 +16,6 @@
     <p> Dérnière modification : {{ customer.date_updated }}</p>
     <p>Déja client : {{ customer.existing }}</p>
     <p>Contact vente : {{ customer.sale_contact.email }}</p>
+{% endif %}
 </div>
 {% endblock %}

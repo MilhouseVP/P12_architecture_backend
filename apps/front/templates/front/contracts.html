@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>tout les contrats</h2>
+{% if error %}
+    <p>{{ error.detail }}</p>
+{% endif %}
+{% if contracts %}
 {% for contract in contracts %}
 <div class="box">
     <p>Client : {{ contract.customer.company }}</p>
@@ -10,4 +14,5 @@
 <a href="{% url 'contract_detail' cont_id=contract.id %}"><button>Détails</button></a>
 </div>
 {% endfor %}
+{% endif %}
 {% endblock %}
