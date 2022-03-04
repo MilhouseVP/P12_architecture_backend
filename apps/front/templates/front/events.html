@@ -5,15 +5,6 @@
     <p>{{ error.detail }}</p>
 {% endif %}
 {% if events %}
-{% for event in events %}
-<div class="box">
-    <p>Client : {{ event.customer.company }}</p>
-    <p>Jauge : {{ event.attendees }}</p>
-    <p>Date : {{ event.event_date }}</p>
-    <p>Contact support : {{ event.support_contact.email }}</p>
-    <p>Note : {{ event.note }}</p>
-    <a href="{% url 'event_detail' event_id=event.id %}"><button>Détails</button></a>
-</div>
-{% endfor %}
+{% include 'front/partials/events_snippet.html' %}
 {% endif %}
 {% endblock %}

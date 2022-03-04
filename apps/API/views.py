@@ -1,6 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
 from .serializers import *
-from .models import Customer, Contract, Event
 from rest_framework.permissions import IsAuthenticated
 import P12_backend.permissions as perms
 from .api_filters import *

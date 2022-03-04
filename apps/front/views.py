@@ -33,10 +33,28 @@ def api_mixin(request, endpoint):
 
 @login_required
 def home(request):
-    return render(request, 'front/home.html')
+    if request.user.role == 'support':
+        endpoint = 'http://127.0.0.1:8000/api/events?support_contact=' \
+                   + str(request.user.id)
+        data = api_mixin(request, endpoint)
+        if 'detail' in data:
+            context = {'error': data['detail']}
+        else:
+            context = {'events': data['results']}
 
+    elif request.user.role == 'sales':
+        endpoint = 'http://127.0.0.1:8000/api/contracts?sale_contact=' \
+                   + str(request.user.id)
+        data = api_mixin(request, endpoint)
+        if 'detail' in data:
+            context = {'error': data['detail']}
+        else:
+            context = {'contracts': data['results']}
+# TODO: gérer manager
+    else:
+        context = {'error': {'detail': "Rien pour l'instant"}}
 
-# TODO: appel api avec JS...
+    return render(request,'front/home.html', context)
 
 
 @login_required
@@ -103,11 +121,3 @@ def event(request, event_id):
     else:
         context = {'event': data}
     return render(request, 'front/event_details.html', context)
-
-
-def account(request):
-    pass
-
-
-def projects(request):
-    pass

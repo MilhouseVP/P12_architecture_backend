@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-
-
-
+<h2>Mes projets</h2>
+{% if error %}
+    <p>{{ error.detail }}</p>
+{% endif %}
+{% if events %}
+    {% include 'front/partials/events_snippet.html' %}
+{% elif contracts %}
+    {% include 'front/partials/contracts_snippet.html' %}
+{% endif %}
 {% endblock %}
