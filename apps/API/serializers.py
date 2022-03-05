@@ -51,7 +51,7 @@ class CreateCustomerSerializer(ModelSerializer):
                                     )
         ]
 
-    def create(self, validated_data ):
+    def create(self, validated_data):
         if not 'mobile' in validated_data:
             validated_data['mobile'] = None
         user = self.context['request'].user
@@ -82,20 +82,22 @@ class CreateContractSerializer(ModelSerializer):
         model = Contract
         fields = ('customer', 'amount', 'payement_due')
 
-    def create(self, validated_data ):
+    def create(self, validated_data):
         print(validated_data)
         user = self.context['request'].user
         validated_data['sale_contact'] = user
         return Contract.objects.create(**validated_data)
 
 
-class ListContractSerializer(ListSaleMixin, ModelSerializer, ListCustomerMixin):
+class ListContractSerializer(ListSaleMixin, ModelSerializer,
+                             ListCustomerMixin):
     sale_contact = SerializerMethodField()
     customer = SerializerMethodField()
 
     class Meta:
         model = Contract
-        fields = ('id', 'customer', 'status', 'amount', 'sale_contact')
+        fields = (
+        'id', 'customer', 'status', 'amount', 'sale_contact', 'event_created')
 
 
 class DetailContractSerializer(SaleMixin, ModelSerializer, ListCustomerMixin):
@@ -121,7 +123,8 @@ class ListEventSerializer(ModelSerializer, ListCustomerMixin):
     class Meta:
         model = Event
         fields = (
-        'id','customer', 'note', 'support_contact', 'event_date', 'attendees')
+            'id', 'customer', 'note', 'support_contact', 'event_date',
+            'attendees')
 
     def get_support_contact(self, instance):
         support = instance.support_contact

@@ -28,6 +28,7 @@ class Contract(models.Model):
     status = models.BooleanField(default=False)
     amount = models.IntegerField()
     payement_due = models.DateField()
+    event_created = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Contrat {self.id}, {self.customer.company}.'

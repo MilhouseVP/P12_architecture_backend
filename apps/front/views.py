@@ -136,7 +136,7 @@ def event(request, event_id):
 
 
 @login_required
-def event_create(request):
+def event_create(request, contract_id, customer_id):
     event_form = EventForm()
     context = {'event_form': event_form}
     if request.method =='POST':
@@ -145,16 +145,16 @@ def event_create(request):
         if event_form.is_valid():
             data = event_form.cleaned_data
             body = {
-                'customer': data['customer'].id,
+                'customer': customer_id,
                 'support_contact': data['support_contact'].id,
-                'event_status': data['event_status'],
-                'contract': data['contract'].id,
+                'contract': contract_id,
                 'attendees': data['attendees'],
                 'event_date': data['event_date'],
                 'note': data['note']
             }
             post_api_mixin(request, body, endpoint)
             return redirect('home')
+        # TODO: supprimer le possibilité de créer un evenement si il y'en a déjà un
 
     return render(request, 'front/create_event.html', context)
 
