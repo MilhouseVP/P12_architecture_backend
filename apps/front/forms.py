@@ -1,4 +1,7 @@
-from django.contrib.auth.forms import UserCreationForm
+from django import forms
 
 
-# class Signup
+class EventForm(forms.Form):
+    customer = forms.IntegerField()
+    support_contact = forms.IntegerField()
+

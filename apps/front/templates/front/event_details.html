@@ -11,7 +11,7 @@
     <p>Date : {{ event.event_date }}</p>
     <p>Création : {{ event.date_created }}</p>
     <p>Modification : {{ event.date_updated }}</p>
-    <a href="{% url 'contract_detail' cont_id=event.event_status %}"><button>Contrat</button></a>
+    <a href="{% url 'contract_detail' cont_id=event.contract.id %}"><button>Contrat</button></a>
     <p>Contact support : {{ event.support_contact.email }}</p>
     <p>Note : {{ event.note }}</p>
 {% endif %}

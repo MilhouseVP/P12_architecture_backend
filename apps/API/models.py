@@ -33,7 +33,9 @@ class Event(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
     support_contact = models.ForeignKey(to=User, on_delete=models.SET_NULL,
                                         null=True)
-    event_status = models.ForeignKey(to=Contract, on_delete=models.CASCADE)
+    event_status = models.BooleanField(default=True)
+    contract = models.ForeignKey(to=Contract, on_delete=models.CASCADE,
+                                 null=True)
     attendees = models.IntegerField(default=0)
     event_date = models.DateTimeField(default=date_created)
     note = models.CharField(max_length=1024)

@@ -24,28 +24,34 @@ class LoginView(BaseLogin):
 
 # TODO: delete cookies at logout
 
-def api_mixin(request, endpoint):
+def get_api_mixin(request, endpoint):
     token = request.COOKIES.get('access')
     head = {'Authorization': 'Bearer ' + token}
     data = requests.get(endpoint, headers=head).json()
     return data
 
+def get_group(user):
+    group_list = []
+    for group in user.groups.all():
+        group_list.append(group.name)
+    return group_list
+
 
 @login_required
 def home(request):
-    if request.user.role == 'support':
+    if 'support' in get_group(request.user):
         endpoint = 'http://127.0.0.1:8000/api/events?support_contact=' \
                    + str(request.user.id)
-        data = api_mixin(request, endpoint)
+        data = get_api_mixin(request, endpoint)
         if 'detail' in data:
             context = {'error': data['detail']}
         else:
             context = {'events': data['results']}
 
-    elif request.user.role == 'sales':
+    elif 'sales' in get_group(request.user):
         endpoint = 'http://127.0.0.1:8000/api/contracts?sale_contact=' \
                    + str(request.user.id)
-        data = api_mixin(request, endpoint)
+        data = get_api_mixin(request, endpoint)
         if 'detail' in data:
             context = {'error': data['detail']}
         else:
@@ -53,14 +59,13 @@ def home(request):
 # TODO: gérer manager
     else:
         context = {'error': {'detail': "Rien pour l'instant"}}
-
-    return render(request,'front/home.html', context)
+    return render(request, 'front/home.html', context)
 
 
 @login_required
 def customers(request):
     endpoint = 'http://127.0.0.1:8000/api/customers/'
-    data = api_mixin(request, endpoint)
+    data = get_api_mixin(request, endpoint)
     if 'detail' in data:
         context = {'error': data['detail']}
     else:
@@ -71,7 +76,7 @@ def customers(request):
 @login_required
 def customer(request, customer_id):
     endpoint = 'http://127.0.0.1:8000/api/customers/' + str(customer_id) + '/'
-    data = api_mixin(request, endpoint)
+    data = get_api_mixin(request, endpoint)
     if 'detail' in data:
         context = {'error': data['detail']}
     else:
@@ -82,7 +87,7 @@ def customer(request, customer_id):
 @login_required
 def contracts(request):
     endpoint = 'http://127.0.0.1:8000/api/contracts/'
-    data = api_mixin(request, endpoint)
+    data = get_api_mixin(request, endpoint)
     if 'detail' in data:
         context = {'error': data['detail']}
     else:
@@ -93,7 +98,7 @@ def contracts(request):
 @login_required
 def contract(request, cont_id):
     endpoint = 'http://127.0.0.1:8000/api/contracts/' + str(cont_id) + '/'
-    data = api_mixin(request, endpoint)
+    data = get_api_mixin(request, endpoint)
     if 'detail' in data:
         context = {'error': data['detail']}
     else:
@@ -104,7 +109,7 @@ def contract(request, cont_id):
 @login_required
 def events(request):
     endpoint = 'http://127.0.0.1:8000/api/events/'
-    data = api_mixin(request, endpoint)
+    data = get_api_mixin(request, endpoint)
     if 'detail' in data:
         context = {'error': data['detail']}
     else:
@@ -115,7 +120,7 @@ def events(request):
 @login_required
 def event(request, event_id):
     endpoint = 'http://127.0.0.1:8000/api/events/' + str(event_id) + '/'
-    data = api_mixin(request, endpoint)
+    data = get_api_mixin(request, endpoint)
     if 'detail' in data:
         context = {'error': data['detail']}
     else:
@@ -124,28 +129,33 @@ def event(request, event_id):
 
 
 @login_required
+def event_edit(request, event_id):
+    pass
+
+
+@login_required
 def users(request):
-    if request.user.role != 'manager':
-        return redirect('home')
-    else:
+    if 'manager' in get_group(request.user):
         endpoint = 'http://127.0.0.1:8000/api/users/'
-        data = api_mixin(request, endpoint)
+        data = get_api_mixin(request, endpoint)
         if 'detail' in data:
             context = {'error': data['detail']}
         else:
             context = {'users': data['results']}
         return render(request, 'front/users.html', context)
+    else:
+        return redirect('home')
 
 
 @login_required
 def user(request, user_id):
-    if request.user.role != 'manager':
-        return redirect('home')
-    else:
+    if 'manager' in get_group(request.user):
         endpoint = 'http://127.0.0.1:8000/api/users/' + str(user_id) + '/'
-        data = api_mixin(request, endpoint)
+        data = get_api_mixin(request, endpoint)
         if 'detail' in data:
             context = {'error': data['detail']}
         else:
             context = {'employee': data}
         return render(request, 'front/user_details.html', context)
+    else:
+        return redirect('home')
