@@ -15,6 +15,9 @@ class Customer(models.Model):
                                      null=True)
     existing = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f'{self.company}, {self.first_name} {self.last_name}'
+
 
 class Contract(models.Model):
     sale_contact = models.ForeignKey(to=User, on_delete=models.SET_NULL,
@@ -25,6 +28,9 @@ class Contract(models.Model):
     status = models.BooleanField(default=False)
     amount = models.IntegerField()
     payement_due = models.DateField()
+
+    def __str__(self):
+        return f'Contrat {self.id}, {self.customer.company}.'
 
 
 class Event(models.Model):
@@ -39,3 +45,6 @@ class Event(models.Model):
     attendees = models.IntegerField(default=0)
     event_date = models.DateTimeField(default=date_created)
     note = models.CharField(max_length=1024)
+
+    def __str__(self):
+        return f'{self.contract}, le {self.event_date}'

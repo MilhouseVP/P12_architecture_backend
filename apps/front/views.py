@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView as BaseLogin
 from django.contrib.auth.decorators import login_required
 import requests
+from .forms import EventForm
+from django.http import JsonResponse
 
 
 class LoginView(BaseLogin):
@@ -29,6 +31,11 @@ def get_api_mixin(request, endpoint):
     head = {'Authorization': 'Bearer ' + token}
     data = requests.get(endpoint, headers=head).json()
     return data
+
+def post_api_mixin(request, body, endpoint):
+    token = request.COOKIES.get('access')
+    head = {'Authorization': 'Bearer ' + token}
+    requests.post(url=endpoint, data=body, headers=head)
 
 def get_group(user):
     group_list = []
@@ -129,8 +136,30 @@ def event(request, event_id):
 
 
 @login_required
-def event_edit(request, event_id):
-    pass
+def event_create(request):
+    event_form = EventForm()
+    context = {'event_form': event_form}
+    if request.method =='POST':
+        endpoint = 'http://127.0.0.1:8000/api/events/'
+        event_form = EventForm(request.POST)
+        if event_form.is_valid():
+            data = event_form.cleaned_data
+            body = {
+                'customer': data['customer'].id,
+                'support_contact': data['support_contact'].id,
+                'event_status': data['event_status'],
+                'contract': data['contract'].id,
+                'attendees': data['attendees'],
+                'event_date': data['event_date'],
+                'note': data['note']
+            }
+            post_api_mixin(request, body, endpoint)
+            return redirect('home')
+
+    return render(request, 'front/create_event.html', context)
+
+
+
 
 
 @login_required
