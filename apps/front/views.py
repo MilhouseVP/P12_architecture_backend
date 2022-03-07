@@ -32,10 +32,19 @@ def get_api_mixin(request, endpoint):
     data = requests.get(endpoint, headers=head).json()
     return data
 
+
 def post_api_mixin(request, body, endpoint):
     token = request.COOKIES.get('access')
     head = {'Authorization': 'Bearer ' + token}
-    requests.post(url=endpoint, data=body, headers=head)
+    data = requests.post(url=endpoint, data=body, headers=head).json()
+    return data
+
+
+def patch_api_mixin(request, body, endpoint):
+    token = request.COOKIES.get('access')
+    head = {'Authorization': 'Bearer ' + token}
+    requests.patch(endpoint, data=body, headers=head)
+
 
 def get_group(user):
     group_list = []
@@ -63,7 +72,7 @@ def home(request):
             context = {'error': data['detail']}
         else:
             context = {'contracts': data['results']}
-# TODO: gérer manager
+    # TODO: gérer manager
     else:
         context = {'error': {'detail': "Rien pour l'instant"}}
     return render(request, 'front/home.html', context)
@@ -102,6 +111,7 @@ def contracts(request):
     return render(request, 'front/contracts.html', context)
 
 
+# TODO: ajouter un bouton pour aller a l'event depuis le contrat
 @login_required
 def contract(request, cont_id):
     endpoint = 'http://127.0.0.1:8000/api/contracts/' + str(cont_id) + '/'
@@ -160,7 +170,7 @@ def event(request, event_id):
 def event_create(request, contract_id, customer_id):
     event_form = EventForm()
     context = {'event_form': event_form}
-    if request.method =='POST':
+    if request.method == 'POST':
         endpoint = 'http://127.0.0.1:8000/api/events/'
         event_form = EventForm(request.POST)
         if event_form.is_valid():
@@ -173,14 +183,15 @@ def event_create(request, contract_id, customer_id):
                 'event_date': data['event_date'],
                 'note': data['note']
             }
-            post_api_mixin(request, body, endpoint)
-            # TODO: changer field envent_created sur contrat
-            return redirect('home')
+            returned_data = post_api_mixin(request, body, endpoint)
+            patch_endpoint = 'http://127.0.0.1:8000/api/contracts/' \
+                             + str(contract_id) + '/'
+            patch_body = {'event_created': True}
+            patch_api_mixin(request, patch_body, patch_endpoint)
+            return redirect('event_detail',
+                            event_id=str(returned_data['id']))
     else:
-        return render(request, 'front/create_contract.html', context)
-
-
-
+        return render(request, 'front/create_event.html', context)
 
 
 @login_required
