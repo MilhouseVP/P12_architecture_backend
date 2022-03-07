@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Créer un contrat</h2>
+<form method="post" enctype="multipart/form-data">
+    {{ contract_form.as_p }}
+    {% csrf_token %}
+    <button type="submit">Enregistrer</button>
+</form>
+
+
+{% endblock %}

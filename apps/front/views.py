@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView as BaseLogin
 from django.contrib.auth.decorators import login_required
 import requests
-from .forms import EventForm
+from .forms import EventForm, ContractForm
 from django.http import JsonResponse
 
 
@@ -114,6 +114,27 @@ def contract(request, cont_id):
 
 
 @login_required
+def contract_create(request, customer_id):
+    contract_form = ContractForm()
+    context = {'contract_form': contract_form}
+    if request.method == 'POST':
+        endpoint = 'http://127.0.0.1:8000/api/contracts/'
+        contract_form = ContractForm(request.POST)
+        if contract_form.is_valid():
+            data = contract_form.cleaned_data
+            body = {
+                'customer': customer_id,
+                'sale_contact': request.user.id,
+                'amount': data['amount'],
+                'payement_due': data['payement_due']
+            }
+            post_api_mixin(request, body, endpoint)
+            return redirect('home')
+    else:
+        return render(request, 'front/create_contract.html', context)
+
+
+@login_required
 def events(request):
     endpoint = 'http://127.0.0.1:8000/api/events/'
     data = get_api_mixin(request, endpoint)
@@ -153,10 +174,10 @@ def event_create(request, contract_id, customer_id):
                 'note': data['note']
             }
             post_api_mixin(request, body, endpoint)
+            # TODO: changer field envent_created sur contrat
             return redirect('home')
-        # TODO: supprimer le possibilité de créer un evenement si il y'en a déjà un
-
-    return render(request, 'front/create_event.html', context)
+    else:
+        return render(request, 'front/create_contract.html', context)
 
 
 
