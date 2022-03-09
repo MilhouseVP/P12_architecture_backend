@@ -47,17 +47,23 @@ urlpatterns = [
          name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('home/', front.home, name='home'),
+
     path('customers/', front.customers, name='customers'),
     path('customer/<int:customer_id>/', front.customer,
          name='customer_detail'),
+
     path('contracts/', front.contracts, name='contracts'),
     path('contract/<int:cont_id>/', front.contract, name='contract_detail'),
     path('<int:customer_id>/create_contract/', front.contract_create,
          name='contract_create'),
+
     path('events/', front.events, name='events'),
     path('event/<int:event_id>/', front.event, name='event_detail'),
     path('<int:contract_id>/<int:customer_id>/create_event/',
          front.event_create, name='event_create'),
+    path('event/<int:edit_event_id>/edit/', front.event_edit,
+         name='event_edit'),
+
     path('users/', front.users, name='users'),
     path('user/<int:user_id>/', front.user, name='user_detail')
 ]

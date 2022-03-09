@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Créer un événement</h2>
+<h2>Modifier l'événement</h2>
 <form method="post" enctype="multipart/form-data">
     {{ event_form.as_p }}
     {% csrf_token %}

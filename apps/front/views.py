@@ -2,8 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView as BaseLogin
 from django.contrib.auth.decorators import login_required
 import requests
-from .forms import EventForm, ContractForm
-from django.http import JsonResponse
+from .forms import EventForm, ContractForm, EventEditForm
 
 
 class LoginView(BaseLogin):
@@ -193,6 +192,26 @@ def event_create(request, contract_id, customer_id):
     else:
         return render(request, 'front/create_event.html', context)
 
+
+@login_required
+def event_edit(request, edit_event_id):
+    form = EventEditForm()
+    endpoint = 'http://127.0.0.1:8000/api/events/' + str(edit_event_id) + '/'
+    if request.method == 'POST':
+        event_form = EventEditForm(request.POST)
+        if event_form.is_valid():
+            body = event_form.cleaned_data
+            patch_api_mixin(request, body=body, endpoint=endpoint)
+            return redirect('event_detail', event_id=str(edit_event_id))
+    else:
+        data = get_api_mixin(request, endpoint)
+        for key in data:
+            try:
+                form.fields[key].initial = data[key]
+            except KeyError:
+                pass
+        context = {'event_form': form}
+        return render(request, 'front/event_edit.html', context=context)
 
 @login_required
 def users(request):
