@@ -103,18 +103,20 @@ class ListContractSerializer(ListSaleMixin, ModelSerializer,
 class DetailContractSerializer(SaleMixin, ModelSerializer, ListCustomerMixin):
     sale_contact = SerializerMethodField()
     customer = SerializerMethodField()
-    # event = SerializerMethodField()
+    event = SerializerMethodField()
 
     class Meta:
         model = Contract
-        fields = '__all__'
-    #     fields = ('sale_contact', 'customer','date_created', 'date_updated',
-    #               'status', 'amount', 'payement_due', 'event')
-    # #
-    # def get_event(self, instance):
-    #     event = Event.objects.filter(contract_id=instance.id)
-    #     serializer = ListEventSerializer(event)
-    #     return serializer.data
+        fields = ('id', 'sale_contact', 'customer', 'date_created',
+                  'date_updated', 'status', 'amount', 'payement_due', 'event')
+    #
+    def get_event(self, instance):
+        try:
+            event = Event.objects.get(contract_id=instance.id)
+            serializer = ListEventSerializer(event)
+            return serializer.data
+        except:
+            return None
 
 
 class CreateEventSerializer(ModelSerializer):

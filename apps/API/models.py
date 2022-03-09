@@ -25,13 +25,14 @@ class Contract(models.Model):
     customer = models.ForeignKey(to=Customer, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
-    status = models.BooleanField(default=False)
+    status = models.BooleanField(default=True)
     amount = models.IntegerField()
     payement_due = models.DateField()
     event_created = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Contrat {self.id}, {self.customer.company}.'
+
 
 
 class Event(models.Model):
@@ -48,4 +49,4 @@ class Event(models.Model):
     note = models.CharField(max_length=1024)
 
     def __str__(self):
-        return f'{self.contract}, le {self.event_date}'
+        return f'{self.contract.customer.company}, le {self.event_date}'
