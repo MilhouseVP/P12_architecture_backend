@@ -2,6 +2,17 @@ from django import forms
 from apps.authenticate.models import CustomUser
 
 
+class CustomerForm(forms.Form):
+    sale_contact = forms.ModelChoiceField(
+        queryset=CustomUser.objects.filter(role='sales'))
+    first_name = forms.CharField(max_length=20)
+    last_name = forms.CharField(max_length=20)
+    phone = forms.CharField(max_length=20)
+    mobile = forms.CharField(max_length=20)
+    email = forms.EmailField()
+    company = forms.CharField(max_length=100)
+
+
 class ContractForm(forms.Form):
     amount = forms.IntegerField(min_value=0)
     payement_due = forms.DateField(label='Date de payement',

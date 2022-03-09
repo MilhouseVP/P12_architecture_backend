@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView as BaseLogin
 from django.contrib.auth.decorators import login_required
+from django import forms
 import requests
-from .forms import EventForm, ContractForm, EventEditForm, ContractEditForm
+from .forms import EventForm, ContractForm, EventEditForm, ContractEditForm, \
+    CustomerForm
 from datetime import datetime
 
 
@@ -98,6 +100,24 @@ def customer(request, customer_id):
     else:
         context = {'customer': data}
     return render(request, 'front/customer_details.html', context)
+
+
+@login_required
+def customer_create(request):
+    form = CustomerForm()
+    if request.user.role == 'sales':
+        form.fields['sale_contact'].widget = forms.HiddenInput()
+        form.fields['sale_contact'].initial = request.user.id
+    context = {'customer_form': form}
+    if request.method == 'POST':
+        endpoint = 'http://127.0.0.1:8000/api/customers/'
+        customer_form = CustomerForm(request.POST)
+        if customer_form.is_valid():
+            data = customer_form.cleaned_data
+            result_data = post_api_mixin(request, body=data, endpoint=endpoint)
+            return redirect('customer_detail', customer_id=result_data['id'])
+    else:
+        return render(request, 'front/create_customer.html', context)
 
 
 @login_required
@@ -235,7 +255,7 @@ def event_edit(request, edit_event_id):
             try:
                 if key == 'event_date':
                     form.fields[key].initial = datetime.strptime(
-                        data[key],'%Y-%m-%dT%H:%M:%SZ')
+                        data[key], '%Y-%m-%dT%H:%M:%SZ')
                 else:
                     form.fields[key].initial = data[key]
             except KeyError:

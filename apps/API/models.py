@@ -7,7 +7,7 @@ class Customer(models.Model):
     last_name = models.CharField(max_length=20)
     phone = models.CharField(max_length=20)
     mobile = models.CharField(max_length=20, null=True)
-    email = models.CharField(max_length=100)
+    email = models.EmailField()
     company = models.CharField(max_length=100)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
