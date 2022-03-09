@@ -18,6 +18,9 @@
     {% elif contract.event %}
     <a href="{% url 'event_detail' event_id=contract.event.id %}"><button>voir l'événement</button></a>
     {% endif %}
+    {% if user.id == contract.sale_contact.id %}
+        <a href="{% url 'contract_edit' edit_cont_id=contract.id %}"><button>Editer</button></a>
+    {% endif %}
 {% endif %}
 </div>
 {% endblock %}

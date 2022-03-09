@@ -56,6 +56,8 @@ urlpatterns = [
     path('contract/<int:cont_id>/', front.contract, name='contract_detail'),
     path('<int:customer_id>/create_contract/', front.contract_create,
          name='contract_create'),
+    path('contract/<int:edit_cont_id>/edit/', front.contract_edit,
+         name='contract_edit'),
 
     path('events/', front.events, name='events'),
     path('event/<int:event_id>/', front.event, name='event_detail'),

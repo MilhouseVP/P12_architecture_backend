@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView as BaseLogin
 from django.contrib.auth.decorators import login_required
 import requests
-from .forms import EventForm, ContractForm, EventEditForm
+from .forms import EventForm, ContractForm, EventEditForm, ContractEditForm
 
 
 class LoginView(BaseLogin):
@@ -141,6 +141,27 @@ def contract_create(request, customer_id):
             return redirect('home')
     else:
         return render(request, 'front/create_contract.html', context)
+
+
+@login_required
+def contract_edit(request, edit_cont_id):
+    form = ContractEditForm()
+    endpoint = 'http://127.0.0.1:8000/api/contracts/' + str(edit_cont_id) + '/'
+    if request.method == 'POST':
+        cont_form = ContractEditForm(request.POST)
+        if cont_form.is_valid():
+            body = cont_form.cleaned_data
+            patch_api_mixin(request, body=body, endpoint=endpoint)
+            return redirect('contract_detail', cont_id=edit_cont_id)
+    else:
+        data = get_api_mixin(request, endpoint)
+        for key in data:
+            try:
+                form.fields[key].initial = data[key]
+            except KeyError:
+                pass
+        context = {'contract_form': form}
+        return render(request, 'front/contract_edit.html', context=context)
 
 
 @login_required
