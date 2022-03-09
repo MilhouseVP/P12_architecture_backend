@@ -3,6 +3,7 @@ from django.contrib.auth.views import LoginView as BaseLogin
 from django.contrib.auth.decorators import login_required
 import requests
 from .forms import EventForm, ContractForm, EventEditForm, ContractEditForm
+from datetime import datetime
 
 
 class LoginView(BaseLogin):
@@ -157,8 +158,12 @@ def contract_edit(request, edit_cont_id):
         data = get_api_mixin(request, endpoint)
         for key in data:
             try:
-                form.fields[key].initial = data[key]
-            except KeyError:
+                if key == 'payement_due':
+                    form.fields[key].initial = datetime.strptime(
+                        data[key], '%Y-%m-%d')
+                else:
+                    form.fields[key].initial = data[key]
+            except:
                 pass
         context = {'contract_form': form}
         return render(request, 'front/contract_edit.html', context=context)
@@ -228,11 +233,16 @@ def event_edit(request, edit_event_id):
         data = get_api_mixin(request, endpoint)
         for key in data:
             try:
-                form.fields[key].initial = data[key]
+                if key == 'event_date':
+                    form.fields[key].initial = datetime.strptime(
+                        data[key],'%Y-%m-%dT%H:%M:%SZ')
+                else:
+                    form.fields[key].initial = data[key]
             except KeyError:
                 pass
         context = {'event_form': form}
         return render(request, 'front/event_edit.html', context=context)
+
 
 @login_required
 def users(request):
