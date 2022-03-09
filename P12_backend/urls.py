@@ -52,6 +52,8 @@ urlpatterns = [
     path('customer/<int:customer_id>/', front.customer,
          name='customer_detail'),
     path('customer/create/', front.customer_create, name='customer_create'),
+    path('customer/<int:edit_customer_id>/edit/', front.customer_edit,
+         name='customer_edit'),
 
     path('contracts/', front.contracts, name='contracts'),
     path('contract/<int:cont_id>/', front.contract, name='contract_detail'),

@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django import forms
 import requests
 from .forms import EventForm, ContractForm, EventEditForm, ContractEditForm, \
-    CustomerForm
+    CustomerForm, CustomerEditForm
 from datetime import datetime
 
 
@@ -105,19 +105,44 @@ def customer(request, customer_id):
 @login_required
 def customer_create(request):
     form = CustomerForm()
+    endpoint = 'http://127.0.0.1:8000/api/customers/'
     if request.user.role == 'sales':
         form.fields['sale_contact'].widget = forms.HiddenInput()
         form.fields['sale_contact'].initial = request.user.id
     context = {'customer_form': form}
     if request.method == 'POST':
-        endpoint = 'http://127.0.0.1:8000/api/customers/'
         customer_form = CustomerForm(request.POST)
         if customer_form.is_valid():
             data = customer_form.cleaned_data
             result_data = post_api_mixin(request, body=data, endpoint=endpoint)
             return redirect('customer_detail', customer_id=result_data['id'])
     else:
-        return render(request, 'front/create_customer.html', context)
+        return render(request, 'front/customer_create.html', context)
+
+
+@login_required
+def customer_edit(request, edit_customer_id):
+    form = CustomerEditForm()
+    endpoint = 'http://127.0.0.1:8000/api/customers/' \
+               + str(edit_customer_id) + '/'
+    if request.method == 'POST':
+        customer_form = CustomerEditForm(request.POST)
+        if customer_form.is_valid():
+            body = customer_form.data
+            patch_api_mixin(request, body=body, endpoint=endpoint)
+            return redirect('customer_detail', customer_id=edit_customer_id)
+    else:
+        data = get_api_mixin(request, endpoint)
+        for key in data:
+            try:
+                if key == 'sale_contact':
+                    form.fields[key].initial = data[key]['id']
+                else:
+                    form.fields[key].initial = data[key]
+            except:
+                pass
+        context = {'customer_form': form}
+        return render(request, 'front/customer_edit.html', context)
 
 
 @login_required
@@ -161,7 +186,7 @@ def contract_create(request, customer_id):
             post_api_mixin(request, body, endpoint)
             return redirect('home')
     else:
-        return render(request, 'front/create_contract.html', context)
+        return render(request, 'front/contract_create.html', context)
 
 
 @login_required
@@ -236,7 +261,7 @@ def event_create(request, contract_id, customer_id):
             return redirect('event_detail',
                             event_id=str(returned_data['id']))
     else:
-        return render(request, 'front/create_event.html', context)
+        return render(request, 'front/event_create.html', context)
 
 
 @login_required

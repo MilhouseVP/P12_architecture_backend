@@ -18,6 +18,7 @@
     <p>Contact vente : {{ customer.sale_contact.email }}</p>
     {% if user.id == customer.sale_contact.id %}
     <a href="{% url 'contract_create' customer_id=customer.id %}"><button>Créer un contrat</button></a>
+    <a href="{% url 'customer_edit' edit_customer_id=customer.id %}"><button>Editer client</button></a>
     {% endif %}
 {% endif %}
 </div>
