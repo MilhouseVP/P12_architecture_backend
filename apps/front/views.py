@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django import forms
 import requests
 from .forms import EventForm, ContractForm, EventEditForm, ContractEditForm, \
-    CustomerForm, CustomerEditForm, UserForm
+    CustomerForm, CustomerEditForm, UserForm, UserPasswordForm
 from datetime import datetime
 
 
@@ -78,6 +78,24 @@ def home(request):
     else:
         context = {'error': {'detail': "Rien pour l'instant"}}
     return render(request, 'front/home.html', context)
+
+
+@login_required
+def account(request):
+    form = UserPasswordForm()
+    context = {'password_form': form}
+    endpoint = 'http://127.0.0.1:8000/api/password_update/'
+    if request.method == 'POST':
+        password_form = UserPasswordForm(request.POST)
+        if password_form.is_valid():
+            body = password_form.data
+            patch_api_mixin(request, body=body, endpoint=endpoint)
+            return redirect('login')
+        else:
+            context = {'error': password_form.data}
+            return render(request, 'front/account.html', context)
+    else:
+        return render(request, 'front/account.html', context)
 
 
 @login_required

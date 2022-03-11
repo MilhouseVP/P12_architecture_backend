@@ -75,3 +75,12 @@ class UserForm(forms.Form):
     phone = forms.CharField()
     mobile = forms.CharField(required=False)
     role = forms.ChoiceField(choices=ROLE_LIST)
+
+
+class UserEditForm(forms.Form):
+    pass
+
+
+class UserPasswordForm(forms.Form):
+    old_password = forms.CharField(min_length=8, widget=forms.PasswordInput)
+    new_password = forms.CharField(min_length=8, widget=forms.PasswordInput)

@@ -50,6 +50,7 @@ urlpatterns = [
          name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('home/', front.home, name='home'),
+    path('account/', front.account, name= 'account'),
 
     path('customers/', front.customers, name='customers'),
     path('customer/<int:customer_id>/', front.customer,

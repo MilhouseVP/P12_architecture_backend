@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Modifier le mot de passe</h2>
+{% if error %}
+    <p>{{ error.detail }}</p>
+{% endif %}
+<form method="post" enctype="multipart/form-data">
+    {{ password_form.as_p }}
+    {% csrf_token %}
+    <button type="submit">Enregistrer</button>
+</form>
+{% endblock %}
