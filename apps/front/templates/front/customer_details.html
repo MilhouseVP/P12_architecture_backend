@@ -16,7 +16,7 @@
     <p> Dérnière modification : {{ customer.date_updated }}</p>
     <p>Déja client : {{ customer.existing }}</p>
     <p>Contact vente : {{ customer.sale_contact.email }}</p>
-    {% if user.id == customer.sale_contact.id %}
+    {% if user.id == customer.sale_contact.id or user.role == 'manager' %}
     <a href="{% url 'contract_create' customer_id=customer.id %}"><button>Créer un contrat</button></a>
     <a href="{% url 'customer_edit' edit_customer_id=customer.id %}"><button>Editer client</button></a>
     {% endif %}

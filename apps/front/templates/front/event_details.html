@@ -11,12 +11,12 @@
     <p>Date : {{ event.event_date }}</p>
     <p>Création : {{ event.date_created }}</p>
     <p>Modification : {{ event.date_updated }}</p>
-    <a href="{% url 'contract_detail' cont_id=event.contract.id %}"><button>Contrat</button></a>
     <p>Contact support : {{ event.support_contact.email }}</p>
     <p>Status : {{ event.event_status }}</p>
     <p>Note : {{ event.note }}</p>
-    {% if user.id == event.support_contact.id %}
-        <a href="{% url 'event_edit' edit_event_id=event.id %}"><button>Editer</button></a>
+    <a href="{% url 'contract_detail' cont_id=event.contract.id %}"><button>Contrat</button></a>
+    {% if user.id == event.support_contact.id or user.role == 'manager' %}
+    <a href="{% url 'event_edit' edit_event_id=event.id %}"><button>Editer</button></a>
     {% endif %}
 {% endif %}
 </div>
