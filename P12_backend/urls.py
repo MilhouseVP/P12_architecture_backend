@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from apps.authenticate.views import RegisterView, UserViewset
+from apps.authenticate.views import RegisterView, UserViewset, UpdatePassword
 import apps.API.views as APIviews
 from apps.front import views as front
 from rest_framework_simplejwt.views import TokenObtainPairView, \
@@ -40,6 +40,9 @@ urlpatterns = [
     path('api/login/refresh/', TokenRefreshView.as_view(),
          name='refresh_token'),
     path('api/signup/', RegisterView.as_view(), name='auth_register'),
+    path('api/password_update/',
+         UpdatePassword.as_view({'patch': 'partial_update'}),
+         name='update_password'),
 
     # Frontend endpoints
     path('', LoginView.as_view(template_name='front/login.html',
