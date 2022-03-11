@@ -3,8 +3,7 @@ from django.contrib.auth.views import LoginView as BaseLogin
 from django.contrib.auth.decorators import login_required
 from django import forms
 import requests
-from .forms import EventForm, ContractForm, EventEditForm, ContractEditForm, \
-    CustomerForm, CustomerEditForm, UserForm, UserPasswordForm
+import apps.front.forms as f
 from datetime import datetime
 
 
@@ -82,11 +81,11 @@ def home(request):
 
 @login_required
 def account(request):
-    form = UserPasswordForm()
+    form = f.UserPasswordForm()
     context = {'password_form': form}
     endpoint = 'http://127.0.0.1:8000/api/password_update/'
     if request.method == 'POST':
-        password_form = UserPasswordForm(request.POST)
+        password_form = f.UserPasswordForm(request.POST)
         if password_form.is_valid():
             body = password_form.data
             patch_api_mixin(request, body=body, endpoint=endpoint)
@@ -122,14 +121,14 @@ def customer(request, customer_id):
 
 @login_required
 def customer_create(request):
-    form = CustomerForm()
+    form = f.CustomerForm()
     endpoint = 'http://127.0.0.1:8000/api/customers/'
     if request.user.role == 'sales':
         form.fields['sale_contact'].widget = forms.HiddenInput()
         form.fields['sale_contact'].initial = request.user.id
     context = {'customer_form': form}
     if request.method == 'POST':
-        customer_form = CustomerForm(request.POST)
+        customer_form = f.CustomerForm(request.POST)
         if customer_form.is_valid():
             data = customer_form.cleaned_data
             result_data = post_api_mixin(request, body=data, endpoint=endpoint)
@@ -140,11 +139,11 @@ def customer_create(request):
 
 @login_required
 def customer_edit(request, edit_customer_id):
-    form = CustomerEditForm()
+    form = f.CustomerEditForm()
     endpoint = 'http://127.0.0.1:8000/api/customers/' \
                + str(edit_customer_id) + '/'
     if request.method == 'POST':
-        customer_form = CustomerEditForm(request.POST)
+        customer_form = f.CustomerEditForm(request.POST)
         if customer_form.is_valid():
             body = customer_form.data
             patch_api_mixin(request, body=body, endpoint=endpoint)
@@ -187,11 +186,11 @@ def contract(request, cont_id):
 
 @login_required
 def contract_create(request, customer_id):
-    contract_form = ContractForm()
+    contract_form = f.ContractForm()
     context = {'contract_form': contract_form}
     if request.method == 'POST':
         endpoint = 'http://127.0.0.1:8000/api/contracts/'
-        contract_form = ContractForm(request.POST)
+        contract_form = f.ContractForm(request.POST)
         if contract_form.is_valid():
             data = contract_form.cleaned_data
             body = {
@@ -208,10 +207,10 @@ def contract_create(request, customer_id):
 
 @login_required
 def contract_edit(request, edit_cont_id):
-    form = ContractEditForm()
+    form = f.ContractEditForm()
     endpoint = 'http://127.0.0.1:8000/api/contracts/' + str(edit_cont_id) + '/'
     if request.method == 'POST':
-        cont_form = ContractEditForm(request.POST)
+        cont_form = f.ContractEditForm(request.POST)
         if cont_form.is_valid():
             body = cont_form.cleaned_data
             patch_api_mixin(request, body=body, endpoint=endpoint)
@@ -255,11 +254,11 @@ def event(request, event_id):
 
 @login_required
 def event_create(request, contract_id, customer_id):
-    event_form = EventForm()
+    event_form = f.EventForm()
     context = {'event_form': event_form}
     if request.method == 'POST':
         endpoint = 'http://127.0.0.1:8000/api/events/'
-        event_form = EventForm(request.POST)
+        event_form = f.EventForm(request.POST)
         if event_form.is_valid():
             data = event_form.cleaned_data
             body = {
@@ -283,10 +282,10 @@ def event_create(request, contract_id, customer_id):
 
 @login_required
 def event_edit(request, edit_event_id):
-    form = EventEditForm()
+    form = f.EventEditForm()
     endpoint = 'http://127.0.0.1:8000/api/events/' + str(edit_event_id) + '/'
     if request.method == 'POST':
-        event_form = EventEditForm(request.POST)
+        event_form = f.EventEditForm(request.POST)
         if event_form.is_valid():
             body = event_form.cleaned_data
             patch_api_mixin(request, body=body, endpoint=endpoint)
@@ -339,11 +338,11 @@ def user_create(request):
     if 'manager' not in get_group(request.user):
         return redirect('home')
     else:
-        form = UserForm()
+        form = f.UserForm()
         context = {'user_form': form}
         if request.method == 'POST':
             endpoint = 'http://127.0.0.1:8000/api/signup/'
-            user_form = UserForm(request.POST)
+            user_form = f.UserForm(request.POST)
             if user_form.is_valid():
                 body = user_form.cleaned_data
                 returned_data = post_api_mixin(request, body, endpoint)
@@ -351,3 +350,24 @@ def user_create(request):
                                 user_id=str(returned_data['id']))
         else:
             return render(request, 'front/user_create.html', context)
+
+
+@login_required
+def user_edit(request, edit_user_id):
+    form = f.UserEditForm()
+    context = {'user_form': form}
+    endpoint = 'http://127.0.0.1:8000/api/users/' + str(edit_user_id) + '/'
+    if request.method == 'POST':
+        user_form = f.UserEditForm(request.POST)
+        if user_form.is_valid():
+            body = user_form.cleaned_data
+            patch_api_mixin(request, body=body, endpoint=endpoint)
+            return redirect('user_detail', user_id=str(edit_user_id))
+    else:
+        data = get_api_mixin(request, endpoint)
+        for key in data:
+            try:
+                form.fields[key].initial = data[key]
+            except KeyError:
+                pass
+        return render(request, 'front/user_edit.html', context)

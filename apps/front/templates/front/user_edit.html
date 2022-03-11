@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Modifier l'utilisateur</h2>
+<form method="post" enctype="multipart/form-data">
+    {{ user_form.as_p }}
+    {% csrf_token %}
+    <button type="submit">Enregistrer</button>
+</form>
+{% endblock %}

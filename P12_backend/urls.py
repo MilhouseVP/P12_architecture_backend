@@ -75,5 +75,6 @@ urlpatterns = [
 
     path('users/', front.users, name='users'),
     path('user/<int:user_id>/', front.user, name='user_detail'),
-    path('user/create/', front.user_create, name='user_create')
+    path('user/create/', front.user_create, name='user_create'),
+    path('user/<int:edit_user_id>/edit/', front.user_edit, name='user_edit')
 ]

@@ -78,7 +78,21 @@ class UserForm(forms.Form):
 
 
 class UserEditForm(forms.Form):
-    pass
+    MANAGER = 'manager'
+    SALES = 'sales'
+    SUPPORT = 'support'
+
+    ROLE_LIST = (
+        (MANAGER, 'manager'),
+        (SALES, 'sales'),
+        (SUPPORT, 'support')
+    )
+    email = forms.EmailField()
+    first_name = forms.CharField(max_length=20)
+    last_name = forms.CharField(max_length=20)
+    phone = forms.CharField()
+    mobile = forms.CharField(required=False)
+    role = forms.ChoiceField(choices=ROLE_LIST)
 
 
 class UserPasswordForm(forms.Form):
