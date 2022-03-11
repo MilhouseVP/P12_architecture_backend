@@ -2,6 +2,7 @@ from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth.models import Group
 from .models import CustomUser
 
 
@@ -58,6 +59,8 @@ class RegistrationSerializer(ModelSerializer):
             role=validated_data['role']
         )
         user.set_password(validated_data['password'])
+        group = Group.objects.get(name=validated_data['role'])
+        user.groups.add(group)
         user.save()
         return user
 

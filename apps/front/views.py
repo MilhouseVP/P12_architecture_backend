@@ -48,11 +48,11 @@ def patch_api_mixin(request, body, endpoint):
     requests.patch(url=url, data=body, headers=head)
 
 
-def delete_api_mixin(request, body, endpoint):
+def delete_api_mixin(request, endpoint):
     url = 'http://127.0.0.1:8000/api/' + endpoint
     token = request.COOKIES.get('access')
     head = {'Authorization': 'Bearer ' + token}
-    requests.delete(url=url, data=body, headers=head)
+    requests.delete(url=url, headers=head)
 
 
 def get_group(current_user):
@@ -379,3 +379,11 @@ def user_edit(request, edit_user_id):
             except KeyError:
                 pass
         return render(request, 'front/user_edit.html', context)
+
+
+@login_required
+def user_delete(request, user_id):
+    endpoint = 'users/' + str(user_id) + '/'
+    delete_api_mixin(request, endpoint)
+    return redirect('users')
+

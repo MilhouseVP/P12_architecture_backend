@@ -13,6 +13,7 @@
     <p>Mobile : {{ employee.mobile }}</p>
     <p>Role : {{ employee.role }}</p>
     <a href="{% url 'user_edit' edit_user_id=user.id %}"><button>Modifier</button></a>
+    <a href="{% url 'user_delete' user_id=employee.id %}"><button>Supprimer</button></a>
 {% endif %}
 </div>
 {% endblock %}

@@ -61,14 +61,14 @@ urlpatterns = [
 
     path('contracts/', front.contracts, name='contracts'),
     path('contract/<int:cont_id>/', front.contract, name='contract_detail'),
-    path('<int:customer_id>/create_contract/', front.contract_create,
+    path('contract/<int:customer_id>/create/', front.contract_create,
          name='contract_create'),
     path('contract/<int:edit_cont_id>/edit/', front.contract_edit,
          name='contract_edit'),
 
     path('events/', front.events, name='events'),
     path('event/<int:event_id>/', front.event, name='event_detail'),
-    path('<int:contract_id>/<int:customer_id>/create_event/',
+    path('event/<int:contract_id>/<int:customer_id>/create/',
          front.event_create, name='event_create'),
     path('event/<int:edit_event_id>/edit/', front.event_edit,
          name='event_edit'),
@@ -76,5 +76,6 @@ urlpatterns = [
     path('users/', front.users, name='users'),
     path('user/<int:user_id>/', front.user, name='user_detail'),
     path('user/create/', front.user_create, name='user_create'),
-    path('user/<int:edit_user_id>/edit/', front.user_edit, name='user_edit')
+    path('user/<int:edit_user_id>/edit/', front.user_edit, name='user_edit'),
+    path('user/<int:user_id>/delete/', front.user_delete, name='user_delete')
 ]
