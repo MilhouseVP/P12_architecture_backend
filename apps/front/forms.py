@@ -55,3 +55,23 @@ class EventEditForm(forms.Form):
         attrs={'type': 'datetime-local'}))
     note = forms.CharField(max_length=1024, label='Note')
     event_status = forms.BooleanField(label='status', required=False)
+
+
+class UserForm(forms.Form):
+    MANAGER = 'manager'
+    SALES = 'sales'
+    SUPPORT = 'support'
+
+    ROLE_LIST = (
+        (MANAGER, 'manager'),
+        (SALES, 'sales'),
+        (SUPPORT, 'support')
+    )
+    email = forms.EmailField()
+    first_name = forms.CharField(max_length=20)
+    last_name = forms.CharField(max_length=20)
+    password = forms.CharField(min_length=8, widget=forms.PasswordInput)
+    password2 = forms.CharField(min_length=8, widget=forms.PasswordInput)
+    phone = forms.CharField()
+    mobile = forms.CharField(required=False)
+    role = forms.ChoiceField(choices=ROLE_LIST)

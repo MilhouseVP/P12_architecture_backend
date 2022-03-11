@@ -29,7 +29,7 @@ class RegistrationSerializer(ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'first_name', 'last_name', 'password', 'password2',
+        fields = ('id', 'email', 'first_name', 'last_name', 'password', 'password2',
                   'phone', 'mobile', 'role')
         extra_kwargs = {
             'email': {'required': True},

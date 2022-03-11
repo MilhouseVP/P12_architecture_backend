@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django import forms
 import requests
 from .forms import EventForm, ContractForm, EventEditForm, ContractEditForm, \
-    CustomerForm, CustomerEditForm
+    CustomerForm, CustomerEditForm, UserForm
 from datetime import datetime
 
 
@@ -156,7 +156,6 @@ def contracts(request):
     return render(request, 'front/contracts.html', context)
 
 
-# TODO: ajouter un bouton pour aller a l'event depuis le contrat
 @login_required
 def contract(request, cont_id):
     endpoint = 'http://127.0.0.1:8000/api/contracts/' + str(cont_id) + '/'
@@ -315,3 +314,22 @@ def user(request, user_id):
         return render(request, 'front/user_details.html', context)
     else:
         return redirect('home')
+
+
+@login_required
+def user_create(request):
+    if 'manager' not in get_group(request.user):
+        return redirect('home')
+    else:
+        form = UserForm()
+        context = {'user_form': form}
+        if request.method == 'POST':
+            endpoint = 'http://127.0.0.1:8000/api/signup/'
+            user_form = UserForm(request.POST)
+            if user_form.is_valid():
+                body = user_form.cleaned_data
+                returned_data = post_api_mixin(request, body, endpoint)
+                return redirect('user_detail',
+                                user_id=str(returned_data['id']))
+        else:
+            return render(request, 'front/user_create.html', context)

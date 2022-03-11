@@ -70,5 +70,6 @@ urlpatterns = [
          name='event_edit'),
 
     path('users/', front.users, name='users'),
-    path('user/<int:user_id>/', front.user, name='user_detail')
+    path('user/<int:user_id>/', front.user, name='user_detail'),
+    path('user/create/', front.user_create, name='user_create')
 ]
