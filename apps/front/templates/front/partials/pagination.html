@@ -1,0 +1,13 @@
+<div class="pagination">
+    {% if instances.has_previous %}
+        <a href="?page=1">premiere</a>
+        <a href="?page={{ instances.previous_page_number }}">précédente</a>
+    {% endif %}
+    <span>
+        Page {{ instances.number }} sur {{ instances.paginator.num_pages }}.
+    </span>
+    {% if instances.has_next %}
+    <a href="?page={{ instances.next_page_number }}">Suivant</a>
+    <a href="?page={{ instances.paginator.num_pages }}">derniere</a>
+    {% endif %}
+</div>

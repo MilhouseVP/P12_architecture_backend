@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView as BaseLogin
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django import forms
 import requests
 import apps.front.forms as f
@@ -20,8 +21,8 @@ class LoginView(BaseLogin):
         password = form['password'].value()
         data = {'username': username, 'password': password}
         tokens = requests.post(url=endpoint, data=data).json()
-        response.set_cookie('access', tokens['access'])
-        response.set_cookie('refresh', tokens['refresh'])
+        response.set_cookie('access', tokens['access'], httponly=True)
+        response.set_cookie('refresh', tokens['refresh'], httponly=True)
         return response
 
 
@@ -42,6 +43,10 @@ def get_api_mixin(request, endpoint):
     token = request.COOKIES.get('access')
     head = {'Authorization': 'Bearer ' + token}
     data = requests.get(url, headers=head).json()
+    while data['next']:
+        next_page = requests.get(data['next'], headers=head).json()
+        data['results'] = data['results'] + next_page['results']
+        data['next'] = next_page['next']
     return data
 
 
@@ -82,7 +87,10 @@ def home(request):
         if 'detail' in data:
             context = {'error': data['detail']}
         else:
-            context = {'events': data['results']}
+            paginator = Paginator(data['results'], 5)
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
+            context = {'instances': page_obj, 'events': True}
 
     elif 'sales' in get_group(request.user):
         endpoint = 'contracts?sale_contact=' + str(request.user.id)
@@ -90,7 +98,10 @@ def home(request):
         if 'detail' in data:
             context = {'error': data['detail']}
         else:
-            context = {'contracts': data['results']}
+            paginator = Paginator(data['results'], 5)
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
+            context = {'instances': page_obj, 'contracts': True}
     # TODO: gérer manager
     else:
         context = {'error': {'detail': "Rien pour l'instant"}}
@@ -104,7 +115,10 @@ def my_customers(request):
     if 'detail' in data:
         context = {'error': data['detail']}
     else:
-        context = {'customers': data['results']}
+        paginator = Paginator(data['results'], 5)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context = {'instances': page_obj, 'customers': True}
     return render(request, 'front/my_customers.html', context)
 
 
@@ -133,7 +147,10 @@ def customers(request):
     if 'detail' in data:
         context = {'error': data['detail']}
     else:
-        context = {'clients': data['results']}
+        paginator = Paginator(data['results'], 5)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context = {'instances': page_obj, 'clients': True}
     return render(request, 'front/customers.html', context)
 
 
@@ -200,7 +217,10 @@ def contracts(request):
     if 'detail' in data:
         context = {'error': data['detail']}
     else:
-        context = {'contracts': data['results']}
+        paginator = Paginator(data['results'], 5)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context = {'instances': page_obj}
     return render(request, 'front/contracts.html', context)
 
 
@@ -273,7 +293,10 @@ def events(request):
     else:
         for event in data['results']:
             event['event_date'] = date_formating(event['event_date'])
-        context = {'events': data['results']}
+        paginator = Paginator(data['results'], 5)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context = {'instances': page_obj, 'events': True}
     return render(request, 'front/events.html', context)
 
 

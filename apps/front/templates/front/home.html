@@ -4,9 +4,11 @@
 {% if error %}
     <p>{{ error.detail }}</p>
 {% endif %}
+{% include 'front/partials/pagination.html' %}
 {% if events %}
-    {% include 'front/partials/events_snippet.html' %}
+    {% include 'front/partials/events_snippet.html' with events=instances %}
 {% elif contracts %}
-    {% include 'front/partials/contracts_snippet.html' %}
+    {% include 'front/partials/contracts_snippet.html' with contracts=instances %}
 {% endif %}
+{% include 'front/partials/pagination.html' %}
 {% endblock %}

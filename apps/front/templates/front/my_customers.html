@@ -4,7 +4,9 @@
 {% if error %}
     <p>{{ error.detail }}</p>
 {% endif %}
+{% include 'front/partials/pagination.html' %}
 {% if customers %}
-    {% include 'front/partials/customers_snippet.html' with clients=customers %}
+    {% include 'front/partials/customers_snippet.html' with clients=instances %}
 {% endif %}
+{% include 'front/partials/pagination.html' %}
 {% endblock %}
