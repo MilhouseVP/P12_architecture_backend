@@ -25,6 +25,18 @@ class LoginView(BaseLogin):
         return response
 
 
+def date_formating(date):
+    if len(date) == 27:
+        dt = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%fZ')
+        return dt.strftime('Le %d/%m/%Y, à %H:%M:%S')
+    elif len(date) ==20:
+        dt = datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')
+        return dt.strftime('Le %d/%m/%Y, à %H:%M:%S')
+    else:
+        dt = datetime.strptime(date, '%Y-%m-%d')
+        return dt.strftime('Le %d/%m/%Y')
+
+
 def get_api_mixin(request, endpoint):
     url = 'http://127.0.0.1:8000/api/' + endpoint
     token = request.COOKIES.get('access')
@@ -132,6 +144,8 @@ def customer(request, customer_id):
     if 'detail' in data:
         context = {'error': data['detail']}
     else:
+        data['date_created'] = date_formating(data['date_created'])
+        data['date_updated'] = date_formating(data['date_updated'])
         context = {'customer': data}
     return render(request, 'front/customer_details.html', context)
 
@@ -197,6 +211,9 @@ def contract(request, cont_id):
     if 'detail' in data:
         context = {'error': data['detail']}
     else:
+        data['date_created'] = date_formating(data['date_created'])
+        data['date_updated'] = date_formating(data['date_updated'])
+        data['payement_due'] = date_formating(data['payement_due'])
         context = {'contract': data}
     return render(request, 'front/contract_details.html', context)
 
@@ -254,6 +271,8 @@ def events(request):
     if 'detail' in data:
         context = {'error': data['detail']}
     else:
+        for event in data['results']:
+            event['event_date'] = date_formating(event['event_date'])
         context = {'events': data['results']}
     return render(request, 'front/events.html', context)
 
@@ -265,6 +284,9 @@ def event(request, event_id):
     if 'detail' in data:
         context = {'error': data['detail']}
     else:
+        data['date_created'] = date_formating(data['date_created'])
+        data['date_updated'] = date_formating(data['date_updated'])
+        data['event_date'] = date_formating(data['event_date'])
         context = {'event': data}
     return render(request, 'front/event_details.html', context)
 
