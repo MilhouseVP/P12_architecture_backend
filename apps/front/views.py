@@ -110,16 +110,19 @@ def home(request):
 
 @login_required
 def my_customers(request):
-    endpoint = 'customers?sale_contact=' + str(request.user.id)
-    data = get_api_mixin(request, endpoint)
-    if 'detail' in data:
-        context = {'error': data['detail']}
+    if ('manager' or 'sales') not in get_group(request.user):
+        return redirect('home')
     else:
-        paginator = Paginator(data['results'], 5)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-        context = {'instances': page_obj, 'customers': True}
-    return render(request, 'front/my_customers.html', context)
+        endpoint = 'customers?sale_contact=' + str(request.user.id)
+        data = get_api_mixin(request, endpoint)
+        if 'detail' in data:
+            context = {'error': data['detail']}
+        else:
+            paginator = Paginator(data['results'], 5)
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
+            context = {'instances': page_obj, 'customers': True}
+        return render(request, 'front/my_customers.html', context)
 
 
 @login_required
@@ -169,45 +172,51 @@ def customer(request, customer_id):
 
 @login_required
 def customer_create(request):
-    form = f.CustomerForm()
-    endpoint = 'customers/'
-    if request.user.role == 'sales':
-        form.fields['sale_contact'].widget = forms.HiddenInput()
-        form.fields['sale_contact'].initial = request.user.id
-    context = {'customer_form': form}
-    if request.method == 'POST':
-        customer_form = f.CustomerForm(request.POST)
-        if customer_form.is_valid():
-            data = customer_form.cleaned_data
-            result_data = post_api_mixin(request, body=data, endpoint=endpoint)
-            return redirect('customer_detail', customer_id=result_data['id'])
+    if ('manager' or 'sales') not in get_group(request.user):
+        return redirect('home')
     else:
-        return render(request, 'front/customer_create.html', context)
+        form = f.CustomerForm()
+        endpoint = 'customers/'
+        if request.user.role == 'sales':
+            form.fields['sale_contact'].widget = forms.HiddenInput()
+            form.fields['sale_contact'].initial = request.user.id
+        context = {'customer_form': form}
+        if request.method == 'POST':
+            customer_form = f.CustomerForm(request.POST)
+            if customer_form.is_valid():
+                data = customer_form.cleaned_data
+                result_data = post_api_mixin(request, body=data, endpoint=endpoint)
+                return redirect('customer_detail', customer_id=result_data['id'])
+        else:
+            return render(request, 'front/customer_create.html', context)
 
 
 @login_required
 def customer_edit(request, edit_customer_id):
-    form = f.CustomerEditForm()
-    endpoint = 'customers/' \
-               + str(edit_customer_id) + '/'
-    if request.method == 'POST':
-        customer_form = f.CustomerEditForm(request.POST)
-        if customer_form.is_valid():
-            body = customer_form.data
-            patch_api_mixin(request, body=body, endpoint=endpoint)
-            return redirect('customer_detail', customer_id=edit_customer_id)
+    if ('manager' or 'sales') not in get_group(request.user):
+        return redirect('home')
     else:
-        data = get_api_mixin(request, endpoint)
-        for key in data:
-            try:
-                if key == 'sale_contact':
-                    form.fields[key].initial = data[key]['id']
-                else:
-                    form.fields[key].initial = data[key]
-            except KeyError:
-                pass
-        context = {'customer_form': form}
-        return render(request, 'front/customer_edit.html', context)
+        form = f.CustomerEditForm()
+        endpoint = 'customers/' \
+                   + str(edit_customer_id) + '/'
+        if request.method == 'POST':
+            customer_form = f.CustomerEditForm(request.POST)
+            if customer_form.is_valid():
+                body = customer_form.data
+                patch_api_mixin(request, body=body, endpoint=endpoint)
+                return redirect('customer_detail', customer_id=edit_customer_id)
+        else:
+            data = get_api_mixin(request, endpoint)
+            for key in data:
+                try:
+                    if key == 'sale_contact':
+                        form.fields[key].initial = data[key]['id']
+                    else:
+                        form.fields[key].initial = data[key]
+                except KeyError:
+                    pass
+            context = {'customer_form': form}
+            return render(request, 'front/customer_edit.html', context)
 
 
 @login_required
@@ -240,48 +249,54 @@ def contract(request, cont_id):
 
 @login_required
 def contract_create(request, customer_id):
-    contract_form = f.ContractForm()
-    context = {'contract_form': contract_form}
-    if request.method == 'POST':
-        endpoint = 'contracts/'
-        contract_form = f.ContractForm(request.POST)
-        if contract_form.is_valid():
-            data = contract_form.cleaned_data
-            body = {
-                'customer': customer_id,
-                'sale_contact': request.user.id,
-                'amount': data['amount'],
-                'payement_due': data['payement_due']
-            }
-            post_api_mixin(request, body, endpoint)
-            return redirect('home')
+    if ('manager' or 'sales') not in get_group(request.user):
+        return redirect('home')
     else:
-        return render(request, 'front/contract_create.html', context)
+        contract_form = f.ContractForm()
+        context = {'contract_form': contract_form}
+        if request.method == 'POST':
+            endpoint = 'contracts/'
+            contract_form = f.ContractForm(request.POST)
+            if contract_form.is_valid():
+                data = contract_form.cleaned_data
+                body = {
+                    'customer': customer_id,
+                    'sale_contact': request.user.id,
+                    'amount': data['amount'],
+                    'payement_due': data['payement_due']
+                }
+                post_api_mixin(request, body, endpoint)
+                return redirect('home')
+        else:
+            return render(request, 'front/contract_create.html', context)
 
 
 @login_required
 def contract_edit(request, edit_cont_id):
-    form = f.ContractEditForm()
-    endpoint = 'contracts/' + str(edit_cont_id) + '/'
-    if request.method == 'POST':
-        cont_form = f.ContractEditForm(request.POST)
-        if cont_form.is_valid():
-            body = cont_form.cleaned_data
-            patch_api_mixin(request, body=body, endpoint=endpoint)
-            return redirect('contract_detail', cont_id=edit_cont_id)
+    if ('manager' or 'sales') not in get_group(request.user):
+        return redirect('home')
     else:
-        data = get_api_mixin(request, endpoint)
-        for key in data:
-            try:
-                if key == 'payement_due':
-                    form.fields[key].initial = datetime.strptime(
-                        data[key], '%Y-%m-%d')
-                else:
-                    form.fields[key].initial = data[key]
-            except KeyError:
-                pass
-        context = {'contract_form': form}
-        return render(request, 'front/contract_edit.html', context=context)
+        form = f.ContractEditForm()
+        endpoint = 'contracts/' + str(edit_cont_id) + '/'
+        if request.method == 'POST':
+            cont_form = f.ContractEditForm(request.POST)
+            if cont_form.is_valid():
+                body = cont_form.cleaned_data
+                patch_api_mixin(request, body=body, endpoint=endpoint)
+                return redirect('contract_detail', cont_id=edit_cont_id)
+        else:
+            data = get_api_mixin(request, endpoint)
+            for key in data:
+                try:
+                    if key == 'payement_due':
+                        form.fields[key].initial = datetime.strptime(
+                            data[key], '%Y-%m-%d')
+                    else:
+                        form.fields[key].initial = data[key]
+                except KeyError:
+                    pass
+            context = {'contract_form': form}
+            return render(request, 'front/contract_edit.html', context=context)
 
 
 @login_required
@@ -316,60 +331,68 @@ def event(request, event_id):
 
 @login_required
 def event_create(request, contract_id, customer_id):
-    event_form = f.EventForm()
-    context = {'event_form': event_form}
-    if request.method == 'POST':
-        endpoint = 'events/'
-        event_form = f.EventForm(request.POST)
-        if event_form.is_valid():
-            data = event_form.cleaned_data
-            body = {
-                'customer': customer_id,
-                'support_contact': data['support_contact'].id,
-                'contract': contract_id,
-                'attendees': data['attendees'],
-                'event_date': data['event_date'],
-                'note': data['note']
-            }
-            returned_data = post_api_mixin(request, body, endpoint)
-            patch_endpoint = 'contracts/' \
-                             + str(contract_id) + '/'
-            patch_body = {'event_created': True}
-            patch_api_mixin(request, patch_body, patch_endpoint)
-            return redirect('event_detail',
-                            event_id=str(returned_data['id']))
+    if ('manager' or 'sales') not in get_group(request.user):
+        return redirect('home')
     else:
-        return render(request, 'front/event_create.html', context)
+        event_form = f.EventForm()
+        context = {'event_form': event_form}
+        if request.method == 'POST':
+            endpoint = 'events/'
+            event_form = f.EventForm(request.POST)
+            if event_form.is_valid():
+                data = event_form.cleaned_data
+                body = {
+                    'customer': customer_id,
+                    'support_contact': data['support_contact'].id,
+                    'contract': contract_id,
+                    'attendees': data['attendees'],
+                    'event_date': data['event_date'],
+                    'note': data['note']
+                }
+                returned_data = post_api_mixin(request, body, endpoint)
+                patch_endpoint = 'contracts/' \
+                                 + str(contract_id) + '/'
+                patch_body = {'event_created': True}
+                patch_api_mixin(request, patch_body, patch_endpoint)
+                return redirect('event_detail',
+                                event_id=str(returned_data['id']))
+        else:
+            return render(request, 'front/event_create.html', context)
 
 
 @login_required
 def event_edit(request, edit_event_id):
-    form = f.EventEditForm()
-    endpoint = 'events/' + str(edit_event_id) + '/'
-    if request.method == 'POST':
-        event_form = f.EventEditForm(request.POST)
-        if event_form.is_valid():
-            body = event_form.cleaned_data
-            patch_api_mixin(request, body=body, endpoint=endpoint)
-            return redirect('event_detail', event_id=str(edit_event_id))
+    if ('manager' or 'support') not in get_group(request.user):
+        return redirect('home')
     else:
-        data = get_api_mixin(request, endpoint)
-        for key in data:
-            try:
-                if key == 'event_date':
-                    form.fields[key].initial = datetime.strptime(
-                        data[key], '%Y-%m-%dT%H:%M:%SZ')
-                else:
-                    form.fields[key].initial = data[key]
-            except KeyError:
-                pass
-        context = {'event_form': form}
-        return render(request, 'front/event_edit.html', context=context)
+        form = f.EventEditForm()
+        endpoint = 'events/' + str(edit_event_id) + '/'
+        if request.method == 'POST':
+            event_form = f.EventEditForm(request.POST)
+            if event_form.is_valid():
+                body = event_form.cleaned_data
+                patch_api_mixin(request, body=body, endpoint=endpoint)
+                return redirect('event_detail', event_id=str(edit_event_id))
+        else:
+            data = get_api_mixin(request, endpoint)
+            for key in data:
+                try:
+                    if key == 'event_date':
+                        form.fields[key].initial = datetime.strptime(
+                            data[key], '%Y-%m-%dT%H:%M:%SZ')
+                    else:
+                        form.fields[key].initial = data[key]
+                except KeyError:
+                    pass
+            context = {'event_form': form}
+            return render(request, 'front/event_edit.html', context=context)
 
 
 @login_required
 def users(request):
-    if 'manager' in get_group(request.user):
+    if 'manager' not in get_group(request.user):
+        return redirect('home')
+    else:
         endpoint = 'users/'
         data = get_api_mixin(request, endpoint)
         if 'detail' in data:
@@ -377,13 +400,13 @@ def users(request):
         else:
             context = {'users': data['results']}
         return render(request, 'front/users.html', context)
-    else:
-        return redirect('home')
 
 
 @login_required
 def user(request, user_id):
-    if 'manager' in get_group(request.user):
+    if 'manager' not in get_group(request.user):
+        return redirect('home')
+    else:
         endpoint = 'users/' + str(user_id) + '/'
         data = get_api_mixin(request, endpoint)
         if 'detail' in data:
@@ -391,8 +414,6 @@ def user(request, user_id):
         else:
             context = {'employee': data}
         return render(request, 'front/user_details.html', context)
-    else:
-        return redirect('home')
 
 
 @login_required
@@ -416,28 +437,33 @@ def user_create(request):
 
 @login_required
 def user_edit(request, edit_user_id):
-    form = f.UserEditForm()
-    context = {'user_form': form}
-    endpoint = 'users/' + str(edit_user_id) + '/'
-    if request.method == 'POST':
-        user_form = f.UserEditForm(request.POST)
-        if user_form.is_valid():
-            body = user_form.cleaned_data
-            patch_api_mixin(request, body=body, endpoint=endpoint)
-            return redirect('user_detail', user_id=str(edit_user_id))
+    if 'manager' not in get_group(request.user):
+        return redirect('home')
     else:
-        data = get_api_mixin(request, endpoint)
-        for key in data:
-            try:
-                form.fields[key].initial = data[key]
-            except KeyError:
-                pass
-        return render(request, 'front/user_edit.html', context)
+        form = f.UserEditForm()
+        context = {'user_form': form}
+        endpoint = 'users/' + str(edit_user_id) + '/'
+        if request.method == 'POST':
+            user_form = f.UserEditForm(request.POST)
+            if user_form.is_valid():
+                body = user_form.cleaned_data
+                patch_api_mixin(request, body=body, endpoint=endpoint)
+                return redirect('user_detail', user_id=str(edit_user_id))
+        else:
+            data = get_api_mixin(request, endpoint)
+            for key in data:
+                try:
+                    form.fields[key].initial = data[key]
+                except KeyError:
+                    pass
+            return render(request, 'front/user_edit.html', context)
 
 
 @login_required
 def user_delete(request, user_id):
-    endpoint = 'users/' + str(user_id) + '/'
-    delete_api_mixin(request, endpoint)
-    return redirect('users')
-
+    if 'manager' not in get_group(request.user):
+        return redirect('home')
+    else:
+        endpoint = 'users/' + str(user_id) + '/'
+        delete_api_mixin(request, endpoint)
+        return redirect('users')
