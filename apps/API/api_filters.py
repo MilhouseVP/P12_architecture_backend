@@ -22,3 +22,13 @@ class EventFilter(filters.FilterSet):
             'event_date',
             'support_contact'
         ]
+
+
+class CustomerFilter(filters.FilterSet):
+    class Meta:
+        model = Customer
+        fields = [
+            'email',
+            'last_name',
+            'company'
+        ]

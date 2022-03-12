@@ -18,6 +18,8 @@
                 <li><a class ="nav__item" href="{% url 'events' %}">Evènements</a></li>
                 {% if user.role == 'manager' %}
                 <li><a class ="nav__item" href="{% url 'users' %}">Utilisateurs</a></li>
+                {% elif user.role == 'sales' %}
+                <li><a class ="nav__item" href="{% url 'my_customers' %}">Mes clients</a></li>
                 {% endif %}
                 <li><a class ="nav__item" href="{% url 'home' %}">Mes projets</a></li>
                 <li><a class ="nav__item" href="{% url 'account' %}">Mon compte</a></li>

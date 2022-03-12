@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Mes clients</h2>
+{% if error %}
+    <p>{{ error.detail }}</p>
+{% endif %}
+{% if customers %}
+    {% include 'front/partials/customers_snippet.html' with clients=customers %}
+{% endif %}
+{% endblock %}

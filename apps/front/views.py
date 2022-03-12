@@ -65,8 +65,7 @@ def get_group(current_user):
 @login_required
 def home(request):
     if 'support' in get_group(request.user):
-        endpoint = 'events?support_contact=' \
-                   + str(request.user.id) + '/'
+        endpoint = 'events?support_contact=' + str(request.user.id)
         data = get_api_mixin(request, endpoint)
         if 'detail' in data:
             context = {'error': data['detail']}
@@ -74,8 +73,7 @@ def home(request):
             context = {'events': data['results']}
 
     elif 'sales' in get_group(request.user):
-        endpoint = 'contracts?sale_contact=' \
-                   + str(request.user.id) + '/'
+        endpoint = 'contracts?sale_contact=' + str(request.user.id)
         data = get_api_mixin(request, endpoint)
         if 'detail' in data:
             context = {'error': data['detail']}
@@ -85,6 +83,17 @@ def home(request):
     else:
         context = {'error': {'detail': "Rien pour l'instant"}}
     return render(request, 'front/home.html', context)
+
+
+@login_required
+def my_customers(request):
+    endpoint = 'customers?sale_contact=' + str(request.user.id)
+    data = get_api_mixin(request, endpoint)
+    if 'detail' in data:
+        context = {'error': data['detail']}
+    else:
+        context = {'customers': data['results']}
+    return render(request, 'front/my_customers.html', context)
 
 
 @login_required

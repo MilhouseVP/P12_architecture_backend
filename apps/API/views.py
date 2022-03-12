@@ -41,7 +41,7 @@ class CustomersViewset(ApiViewsetMixin, ModelViewSet):
     serializer_class = ListCustomersSerializer
     create_serializer_class = CreateCustomerSerializer
     detail_serializer_class = DetailCustomersSerializer
-    filter_fields = ['email', 'last_name', 'company']
+    filterset_class = CustomerFilter
 
     def get_queryset(self):
         return Customer.objects.all()
