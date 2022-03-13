@@ -1,6 +1,7 @@
 let customer = document.getElementById('customer')
 let contract = document.getElementById('contract')
 let event = document.getElementById('event')
+let input_field = document.getElementById('search_input')
 
 let search_type = document.getElementById('choices')
 
@@ -30,4 +31,13 @@ contract.addEventListener('click', function contract_change(event) {
 
 event.addEventListener('click', function event_change(event) {
     search_type.innerHTML = event_choices;
+});
+
+search_type.addEventListener('input', function input_change() {
+   if ((search_type.value === 'date_created') || (search_type.value === 'event_date')) {
+        input_field.type = 'date';
+    }
+   else {
+       input_field.type = 'text';
+   }
 });

@@ -30,7 +30,7 @@ def date_formating(date):
     if len(date) == 27:
         dt = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%fZ')
         return dt.strftime('Le %d/%m/%Y, à %H:%M:%S')
-    elif len(date) ==20:
+    elif len(date) == 20:
         dt = datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')
         return dt.strftime('Le %d/%m/%Y, à %H:%M:%S')
     else:
@@ -161,16 +161,31 @@ def search(request):
     else:
         return render(request, 'front/search.html')
 
-    if  'email' in request.GET['type']:
+    # TODO: voire si y'a moyen de reduire les elif en utilisant un dict avec le type d'un coté et le suffix de l'autre
+
+    if 'email' in request.GET['type']:
         endpoint = endpoint + 'email=' + request.GET['search_input']
-    elif  'name' in request.GET['type']:
+    elif 'last_name' in request.GET['type']:
         endpoint = endpoint + 'last_name=' + request.GET['search_input']
-    elif  'company' in request.GET['type']:
+    elif 'company' in request.GET['type']:
         endpoint = endpoint + 'company=' + request.GET['search_input']
+    elif 'customer__email' in request.GET['type']:
+        endpoint = endpoint + 'customer__email=' + request.GET['search_input']
+    elif 'customer__last_name' in request.GET['type']:
+        endpoint = endpoint + 'customer__last_name=' \
+                   + request.GET['search_input']
+    elif 'customer__company' in request.GET['type']:
+        endpoint = endpoint + 'customer__company=' \
+                   + request.GET['search_input']
+    elif 'date_created' in request.GET['type']:
+        endpoint = endpoint + 'date_contains=' + request.GET['search_input']
+    elif 'amount' in request.GET['type']:
+        endpoint = endpoint + 'amount=' + request.GET['search_input']
+    elif 'event_date' in request.GET['type']:
+        endpoint = endpoint + 'event_date=' + request.GET['search_input']
 
-    result = get_api_mixin(request, endpoint)
-    context['results'] = result['results']
-
+    return_data = get_api_mixin(request, endpoint)
+    context['results'] = return_data['results']
 
     return render(request, 'front/search.html', context)
 
@@ -217,8 +232,10 @@ def customer_create(request):
             customer_form = f.CustomerForm(request.POST)
             if customer_form.is_valid():
                 data = customer_form.cleaned_data
-                result_data = post_api_mixin(request, body=data, endpoint=endpoint)
-                return redirect('customer_detail', customer_id=result_data['id'])
+                result_data = post_api_mixin(request, body=data,
+                                             endpoint=endpoint)
+                return redirect('customer_detail',
+                                customer_id=result_data['id'])
         else:
             return render(request, 'front/customer_create.html', context)
 
@@ -236,7 +253,8 @@ def customer_edit(request, edit_customer_id):
             if customer_form.is_valid():
                 body = customer_form.data
                 patch_api_mixin(request, body=body, endpoint=endpoint)
-                return redirect('customer_detail', customer_id=edit_customer_id)
+                return redirect('customer_detail',
+                                customer_id=edit_customer_id)
         else:
             data = get_api_mixin(request, endpoint)
             for key in data:
