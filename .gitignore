@@ -1,5 +1,5 @@
 .idea/
 env/
 /test.py
-/static/style.scss
-/static/style.css.map
+/static/css/style.scss
+/static/css/style.css.map

@@ -30,5 +30,6 @@ class CustomerFilter(filters.FilterSet):
         fields = [
             'email',
             'last_name',
-            'company'
+            'company',
+            'sale_contact'
         ]

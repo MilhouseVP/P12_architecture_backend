@@ -52,6 +52,7 @@ urlpatterns = [
     path('home/', front.home, name='home'),
     path('my_customers/', front.my_customers, name='my_customers'),
     path('account/', front.account, name= 'account'),
+    path('search/', front.search, name='search'),
 
     path('customers/', front.customers, name='customers'),
     path('customer/<int:customer_id>/', front.customer,

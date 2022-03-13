@@ -42,4 +42,12 @@ body {
   margin-left: 10px;
 }
 
+.search {
+  display: flex;
+  width: 100%;
+}
+.search button {
+  margin-left: 5%;
+}
+
 /*# sourceMappingURL=style.css.map */

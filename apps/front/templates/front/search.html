@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h2>Recherches</h2>
+<form method="get">
+    <div class="search">
+        <div class="search_model">
+            <label for="customer">Client</label>
+            <input type="radio" name="search_sel" id="customer" value="customer">
+            <label for="contract">contrat</label>
+            <input type="radio" name="search_sel" id="contract" value="contract">
+            <label for="event">Evenement</label>
+            <input type="radio" name="search_sel" id="event" value="event">
+        </div>
+        <div>
+            <select id="choices">
+            </select>
+        </div>
+        <div class="search_input">
+            <input type="text" name="search_input">
+        </div>
+        <div>
+            <button type="submit">Recherche</button>
+        </div>
+    </div>
+</form>
+<script src="{% static 'js/search.js' %}"></script>
+{% if results %}
+    {% if type == 'customer' %}
+        {% include 'front/partials/customers_snippet.html' with clients=results %}
+    {% endif %}
+{% endif %}
+{% endblock %}

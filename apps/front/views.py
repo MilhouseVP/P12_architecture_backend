@@ -144,6 +144,36 @@ def account(request):
 
 
 @login_required
+def search(request):
+    endpoint = ''
+    context = {}
+    if 'customer' in request.GET:
+        endpoint = 'customers?'
+        context['type'] = 'customer'
+    elif 'contract' in request.GET:
+        endpoint = 'contracts?'
+        context['type'] = 'contract'
+    elif 'event' in request.GET:
+        endpoint = 'events?'
+        context['type'] = 'event'
+    else:
+        return render(request, 'front/search.html')
+
+    if  'email' in request.GET['type']:
+        endpoint = endpoint + 'email=' + request.GET['search_input']
+    elif  'name' in request.GET['type']:
+        endpoint = endpoint + 'last_name=' + request.GET['search_input']
+    elif  'company' in request.GET['type']:
+        endpoint = endpoint + 'company=' + request.GET['search_input']
+
+    result = get_api_mixin(request, endpoint)
+    context['results'] = result['results']
+
+
+    return render(request, 'front/search.html', context)
+
+
+@login_required
 def customers(request):
     endpoint = 'customers/'
     data = get_api_mixin(request, endpoint)
