@@ -28,12 +28,12 @@
 {% if results %}
     {% if type == 'customer' %}
         {% include 'front/partials/customers_snippet.html' with clients=results %}
-    {% endif %}
-    {% if type == 'contract' %}
+    {% elif type == 'contract' %}
         {% include 'front/partials/contracts_snippet.html' with contracts=results %}
-    {% endif %}
-    {% if type == 'event' %}
+    {% elif type == 'event' %}
         {% include 'front/partials/events_snippet.html' with events=results %}
     {% endif %}
+    {% elif empty %}
+    <p>Aucuns résultats</p>
 {% endif %}
 {% endblock %}

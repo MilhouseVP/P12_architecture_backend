@@ -18,6 +18,8 @@ class ContractFilter(filters.FilterSet):
 
 
 class EventFilter(filters.FilterSet):
+    date_contains = filters.CharFilter(field_name='event_date',
+                                       lookup_expr='icontains')
     class Meta:
         model = Event
         fields = [

@@ -148,46 +148,41 @@ def account(request):
 def search(request):
     endpoint = ''
     context = {}
+
+    search_dict = {
+        'customer': ['customers?', 'customer'],
+        'contract': ['contracts?', 'contract'],
+        'event': ['events?', 'event']
+    }
+
+    type_dict = {
+        'email': 'email=',
+        'last_name': 'last_name=',
+        'company': 'company=',
+        'customer__email': 'customer__email=',
+        'customer__last_name': 'customer__last_name=',
+        'customer__company': 'customer__company=',
+        'date_created': 'date_contains=',
+        'amount': 'amount=',
+        'event_date': 'date_contains='
+    }
     if 'search_sel' in request.GET:
-        if 'customer' in request.GET['search_sel']:
-            endpoint = 'customers?'
-            context['type'] = 'customer'
-        elif 'contract' in request.GET['search_sel']:
-            endpoint = 'contracts?'
-            context['type'] = 'contract'
-        elif 'event' in request.GET['search_sel']:
-            endpoint = 'events?'
-            context['type'] = 'event'
+        sel = request.GET['search_sel']
+        endpoint = search_dict[sel][0]
+        context['type'] = search_dict[sel][1]
+        type = request.GET['type']
+        endpoint = endpoint + type_dict[type] + request.GET['search_input']
+
+        return_data = get_api_mixin(request, endpoint)
+
+        if not return_data['results']:
+            context['empty'] = True
+        else:
+            context['results'] = return_data['results']
+        return render(request, 'front/search.html', context)
+
     else:
         return render(request, 'front/search.html')
-
-    # TODO: voire si y'a moyen de reduire les elif en utilisant un dict avec le type d'un coté et le suffix de l'autre
-
-    if 'email' in request.GET['type']:
-        endpoint = endpoint + 'email=' + request.GET['search_input']
-    elif 'last_name' in request.GET['type']:
-        endpoint = endpoint + 'last_name=' + request.GET['search_input']
-    elif 'company' in request.GET['type']:
-        endpoint = endpoint + 'company=' + request.GET['search_input']
-    elif 'customer__email' in request.GET['type']:
-        endpoint = endpoint + 'customer__email=' + request.GET['search_input']
-    elif 'customer__last_name' in request.GET['type']:
-        endpoint = endpoint + 'customer__last_name=' \
-                   + request.GET['search_input']
-    elif 'customer__company' in request.GET['type']:
-        endpoint = endpoint + 'customer__company=' \
-                   + request.GET['search_input']
-    elif 'date_created' in request.GET['type']:
-        endpoint = endpoint + 'date_contains=' + request.GET['search_input']
-    elif 'amount' in request.GET['type']:
-        endpoint = endpoint + 'amount=' + request.GET['search_input']
-    elif 'event_date' in request.GET['type']:
-        endpoint = endpoint + 'event_date=' + request.GET['search_input']
-
-    return_data = get_api_mixin(request, endpoint)
-    context['results'] = return_data['results']
-
-    return render(request, 'front/search.html', context)
 
 
 @login_required
