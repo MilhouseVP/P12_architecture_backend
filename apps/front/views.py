@@ -43,10 +43,11 @@ def get_api_mixin(request, endpoint):
     token = request.COOKIES.get('access')
     head = {'Authorization': 'Bearer ' + token}
     data = requests.get(url, headers=head).json()
-    while data['next']:
-        next_page = requests.get(data['next'], headers=head).json()
-        data['results'] = data['results'] + next_page['results']
-        data['next'] = next_page['next']
+    if 'next' in data:
+        while data['next']:
+            next_page = requests.get(data['next'], headers=head).json()
+            data['results'] = data['results'] + next_page['results']
+            data['next'] = next_page['next']
     return data
 
 
@@ -147,15 +148,16 @@ def account(request):
 def search(request):
     endpoint = ''
     context = {}
-    if 'customer' in request.GET:
-        endpoint = 'customers?'
-        context['type'] = 'customer'
-    elif 'contract' in request.GET:
-        endpoint = 'contracts?'
-        context['type'] = 'contract'
-    elif 'event' in request.GET:
-        endpoint = 'events?'
-        context['type'] = 'event'
+    if 'search_sel' in request.GET:
+        if 'customer' in request.GET['search_sel']:
+            endpoint = 'customers?'
+            context['type'] = 'customer'
+        elif 'contract' in request.GET['search_sel']:
+            endpoint = 'contracts?'
+            context['type'] = 'contract'
+        elif 'event' in request.GET['search_sel']:
+            endpoint = 'events?'
+            context['type'] = 'event'
     else:
         return render(request, 'front/search.html')
 
