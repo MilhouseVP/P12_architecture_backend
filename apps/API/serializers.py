@@ -5,11 +5,11 @@ from apps.authenticate.serializers import EmbedCustomUserSerializer, \
     DetailCustomUserSerializer
 
 
-# class SaleMixin:
-#     def get_sale_contact(self, instance):
-#         sale = instance.sale_contact
-#         serializer = DetailCustomUserSerializer(sale)
-#         return serializer.data
+class ContractMixin:
+    def get_contract(self, instance):
+        sale = instance.contract
+        serializer = EmbedContractSerializer(sale)
+        return serializer.data
 
 
 class SaleMixin:
@@ -19,7 +19,7 @@ class SaleMixin:
         return serializer.data
 
 
-class ListCustomerMixin:
+class CustomerMixin:
     def get_customer(self, instance):
         customer = instance.customer
         serializer = EmbeddedCustomerSerializer(customer)
@@ -59,12 +59,6 @@ class CreateCustomerSerializer(ModelSerializer):
         return Customer.objects.create(**validated_data)
 
 
-class EmbeddedCustomerSerializer(ModelSerializer):
-    class Meta:
-        model = Customer
-        fields = ['id', 'company', ]
-
-
 class ListCustomersSerializer(SaleMixin, ModelSerializer):
     sale_contact = SerializerMethodField()
 
@@ -83,6 +77,12 @@ class DetailCustomersSerializer(SaleMixin, ModelSerializer):
         fields = '__all__'
 
 
+class EmbeddedCustomerSerializer(ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = ['id', 'company', ]
+
+
 class CreateContractSerializer(ModelSerializer):
     class Meta:
         model = Contract
@@ -96,18 +96,17 @@ class CreateContractSerializer(ModelSerializer):
 
 
 class ListContractSerializer(SaleMixin, ModelSerializer,
-                             ListCustomerMixin):
+                             CustomerMixin):
     sale_contact = SerializerMethodField()
     customer = SerializerMethodField()
 
     class Meta:
         model = Contract
         fields = (
-            'id', 'customer', 'status', 'amount', 'sale_contact',
-            'event_created')
+            'id', 'customer', 'status', 'amount', 'sale_contact')
 
 
-class DetailContractSerializer(SaleMixin, ModelSerializer, ListCustomerMixin):
+class DetailContractSerializer(SaleMixin, ModelSerializer, CustomerMixin):
     sale_contact = SerializerMethodField()
     customer = SerializerMethodField()
     event = SerializerMethodField()
@@ -115,16 +114,23 @@ class DetailContractSerializer(SaleMixin, ModelSerializer, ListCustomerMixin):
     class Meta:
         model = Contract
         fields = ('id', 'sale_contact', 'customer', 'date_created',
-                  'date_updated', 'status', 'amount', 'payement_due', 'event')
+                  'event_created', 'date_updated', 'status', 'amount',
+                  'payement_due', 'event')
 
     #
     def get_event(self, instance):
         try:
             event = Event.objects.get(contract_id=instance.id)
-            serializer = ListEventSerializer(event)
+            serializer = EmbedEventSerializer(event)
             return serializer.data
         except:
             return None
+
+
+class EmbedContractSerializer(ModelSerializer):
+    class Meta:
+        model = Contract
+        fields = ['id']
 
 
 class CreateEventSerializer(ModelSerializer):
@@ -135,7 +141,7 @@ class CreateEventSerializer(ModelSerializer):
         'event_date', 'note', 'contract')
 
 
-class ListEventSerializer(ModelSerializer, ListCustomerMixin):
+class ListEventSerializer(ModelSerializer, CustomerMixin):
     support_contact = SerializerMethodField()
     customer = SerializerMethodField()
 
@@ -151,7 +157,7 @@ class ListEventSerializer(ModelSerializer, ListCustomerMixin):
         return serializer.data
 
 
-class DetailEventSerializer(ModelSerializer, ListCustomerMixin):
+class DetailEventSerializer(ModelSerializer, CustomerMixin, ContractMixin):
     support_contact = SerializerMethodField()
     customer = SerializerMethodField()
     contract = SerializerMethodField()
@@ -165,7 +171,8 @@ class DetailEventSerializer(ModelSerializer, ListCustomerMixin):
         serializer = DetailCustomUserSerializer(support)
         return serializer.data
 
-    def get_contract(self, instance):
-        contract = instance.contract
-        serializer = ListContractSerializer(contract)
-        return serializer.data
+
+class EmbedEventSerializer(ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ['id']
