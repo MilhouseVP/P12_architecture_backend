@@ -21,7 +21,9 @@
                 {% elif user.role == 'sales' %}
                 <li><a class ="nav__item" href="{% url 'my_customers' %}">Mes clients</a></li>
                 {% endif %}
+                {% if user.role != 'manager' %}
                 <li><a class ="nav__item" href="{% url 'home' %}">Mes projets</a></li>
+                {% endif %}
                 <li><a class ="nav__item" href="{% url 'search' %}">Recherche</a></li>
                 <li><a class ="nav__item" href="{% url 'account' %}">Mon compte</a></li>
                 <li><a class ="nav__item" href="{% url 'logout' %}">Se Déconnecter</a></li>

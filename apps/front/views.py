@@ -106,9 +106,11 @@ def home(request):
             page_number = request.GET.get('page')
             page_obj = paginator.get_page(page_number)
             context = {'instances': page_obj, 'contracts': True}
-    # TODO: gérer manager
     else:
-        context = {'error': {'detail': "Rien pour l'instant"}}
+        # 'manager' in get_group(request.user):
+        return redirect('users')
+    # else:
+    #     context = {'error': {'detail': "Rien pour l'instant"}}
     return render(request, 'front/home.html', context)
 
 
