@@ -14,8 +14,21 @@ class CustomerForm(forms.Form):
 
 
 class CustomerEditForm(forms.Form):
-    sale_contact = forms.ModelChoiceField(
-        queryset=CustomUser.objects.filter(role='sales'))
+    def __init__(self, sales=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sales_choices = []
+        if sales:
+            for employee in sales:
+                id = int(employee['id'])
+                mail = employee['email']
+                user_data = (id, mail)
+                # print(user_data)
+                self.sales_choices.append(user_data)
+        self.fields['sale_contact'] = forms.ChoiceField(
+            choices=self.sales_choices)
+
+    # sale_contact = forms.ModelChoiceField(
+    #     queryset=CustomUser.objects.filter(role='sales'))
     first_name = forms.CharField(max_length=20)
     last_name = forms.CharField(max_length=20)
     phone = forms.CharField(max_length=20)

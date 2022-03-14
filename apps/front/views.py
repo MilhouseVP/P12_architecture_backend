@@ -63,7 +63,8 @@ def patch_api_mixin(request, body, endpoint):
     url = 'http://127.0.0.1:8000/api/' + endpoint
     token = request.COOKIES.get('access')
     head = {'Authorization': 'Bearer ' + token}
-    requests.patch(url=url, data=body, headers=head)
+    data = requests.patch(url=url, data=body, headers=head)
+    return data
 
 
 def delete_api_mixin(request, endpoint):
@@ -113,7 +114,8 @@ def home(request):
 
 @login_required
 def my_customers(request):
-    if ('manager' or 'sales') not in get_group(request.user):
+    groups = get_group(request.user)
+    if 'manager' in groups or 'sales' not in groups :
         return redirect('home')
     else:
         endpoint = 'customers?sale_contact=' + str(request.user.id)
@@ -221,7 +223,8 @@ def customer(request, customer_id):
 
 @login_required
 def customer_create(request):
-    if ('manager' or 'sales') not in get_group(request.user):
+    groups = get_group(request.user)
+    if 'manager' in groups or 'sales' not in groups :
         return redirect('home')
     else:
         form = f.CustomerForm()
@@ -244,16 +247,20 @@ def customer_create(request):
 
 @login_required
 def customer_edit(request, edit_customer_id):
-    if ('manager' or 'sales') not in get_group(request.user):
+    groups = get_group(request.user)
+    if 'manager' in groups or 'sales' not in groups :
         return redirect('home')
     else:
-        form = f.CustomerEditForm()
+        users_endpoint = 'users?role=sales'
+        sales_users = get_api_mixin(request, users_endpoint)
+        form = f.CustomerEditForm(sales_users['results'])
+
         endpoint = 'customers/' \
                    + str(edit_customer_id) + '/'
         if request.method == 'POST':
-            customer_form = f.CustomerEditForm(request.POST)
-            if customer_form.is_valid():
-                body = customer_form.data
+            form = f.CustomerEditForm(sales_users['results'], request.POST)
+            if form.is_valid():
+                body = form.data
                 patch_api_mixin(request, body=body, endpoint=endpoint)
                 return redirect('customer_detail',
                                 customer_id=edit_customer_id)
@@ -301,7 +308,8 @@ def contract(request, cont_id):
 
 @login_required
 def contract_create(request, customer_id):
-    if ('manager' or 'sales') not in get_group(request.user):
+    groups = get_group(request.user)
+    if 'manager' in groups or 'sales' not in groups :
         return redirect('home')
     else:
         contract_form = f.ContractForm()
@@ -325,7 +333,8 @@ def contract_create(request, customer_id):
 
 @login_required
 def contract_edit(request, edit_cont_id):
-    if ('manager' or 'sales') not in get_group(request.user):
+    groups = get_group(request.user)
+    if 'manager' in groups or 'sales' not in groups:
         return redirect('home')
     else:
         form = f.ContractEditForm()
@@ -383,7 +392,8 @@ def event(request, event_id):
 
 @login_required
 def event_create(request, contract_id, customer_id):
-    if ('manager' or 'sales') not in get_group(request.user):
+    groups = get_group(request.user)
+    if 'manager' in groups or 'sales' not in groups:
         return redirect('home')
     else:
         event_form = f.EventForm()
@@ -414,7 +424,8 @@ def event_create(request, contract_id, customer_id):
 
 @login_required
 def event_edit(request, edit_event_id):
-    if ('manager' or 'support') not in get_group(request.user):
+    groups = get_group(request.user)
+    if 'manager' in groups or 'support' not in groups:
         return redirect('home')
     else:
         form = f.EventEditForm()

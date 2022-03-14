@@ -21,8 +21,8 @@ class IsManager(BasePermission, GroupMixin):
 class IsSales(BasePermission, GroupMixin):
     def has_permission(self, request, view):
         user = CustomUser.objects.get(id=request.user.id)
-        # if user.role == 'sales' or user.role == 'manager':
-        if ('sales' or 'manager') in self.get_group_list(user):
+        perms = self.get_group_list(user)
+        if 'sales' in perms or 'manager' in perms:
             return True
         else:
             return False
@@ -31,8 +31,8 @@ class IsSales(BasePermission, GroupMixin):
 class IsSupport(BasePermission, GroupMixin):
     def has_permission(self, request, view):
         user = CustomUser.objects.get(id=request.user.id)
-        # if user.role == 'support' or user.role == 'manager':
-        if ('support' or 'manager') in self.get_group_list(user):
+        perms = self.get_group_list(user)
+        if 'support' in perms or 'manager' in perms:
             return True
         else:
             return False
@@ -40,7 +40,6 @@ class IsSupport(BasePermission, GroupMixin):
 
 class IsSaleReferee(BasePermission, GroupMixin):
     def has_object_permission(self, request, view, obj):
-        # if obj.sale_contact == request.user or request.user.role == 'manager':
         if obj.sale_contact == request.user \
                 or 'manager' in self.get_group_list(request.user):
             return True
@@ -50,8 +49,6 @@ class IsSaleReferee(BasePermission, GroupMixin):
 
 class IsSupportReferee(BasePermission, GroupMixin):
     def has_object_permission(self, request, view, obj):
-        # if obj.support_contact == request.user \
-        #         or request.user.role == 'manager':
         if obj.support_contact == request.user \
                 or 'manager' in self.get_group_list(request.user):
             return True

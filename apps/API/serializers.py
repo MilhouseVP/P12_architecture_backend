@@ -77,6 +77,12 @@ class DetailCustomersSerializer(SaleMixin, ModelSerializer):
         fields = '__all__'
 
 
+class EditCustomersSerializer(SaleMixin, ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = '__all__'
+
+
 class EmbeddedCustomerSerializer(ModelSerializer):
     class Meta:
         model = Customer

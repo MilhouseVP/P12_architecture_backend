@@ -6,7 +6,8 @@ from .api_filters import *
 
 
 class ApiViewsetMixin:
-    serializer_actions = ['retrieve', 'update', 'partial_update']
+    serializer_actions = ['retrieve']
+    edit_serializer = ['update', 'partial_update']
 
     read_actions = ['list', 'retrieve']
     edit_actions = ['update', 'partial_update']
@@ -14,6 +15,7 @@ class ApiViewsetMixin:
     serializer_class = None
     create_serializer_class = None
     detail_serializer_class = None
+    edit_serializer_class = None
 
     permission_classes = [IsAuthenticated]
     edit_permissions = [IsAuthenticated, perms.IsSaleReferee]
@@ -23,6 +25,8 @@ class ApiViewsetMixin:
     def get_serializer_class(self):
         if self.action in self.serializer_actions:
             return self.detail_serializer_class
+        elif self.action in self.edit_serializer:
+            return self.edit_serializer_class
         elif self.action == 'create':
             return self.create_serializer_class
         return super().get_serializer_class()
@@ -41,6 +45,7 @@ class CustomersViewset(ApiViewsetMixin, ModelViewSet):
     serializer_class = ListCustomersSerializer
     create_serializer_class = CreateCustomerSerializer
     detail_serializer_class = DetailCustomersSerializer
+    edit_serializer_class = EditCustomersSerializer
     filterset_class = CustomerFilter
 
     def get_queryset(self):

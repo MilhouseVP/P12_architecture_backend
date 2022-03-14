@@ -7,6 +7,7 @@ from apps.authenticate.models import CustomUser
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 import P12_backend.permissions as perms
+from .filters import UserFilter
 
 
 class RegisterView(CreateAPIView):
@@ -15,8 +16,15 @@ class RegisterView(CreateAPIView):
 
 
 class UserViewset(ModelViewSet):
-    permission_classes = [IsAuthenticated, perms.IsManager]
+    permission_classes = [IsAuthenticated, perms.IsSales]
+    edit_permissions = [IsAuthenticated, perms.IsManager]
     serializer_class = DetailCustomUserSerializer
+    filterset_class = UserFilter
+
+    def get_permissions(self):
+        if self.action != ('list' or 'retrieve'):
+            return self.edit_permissions
+        return super().get_permissions()
 
     def get_queryset(self):
         return CustomUser.objects.all()
