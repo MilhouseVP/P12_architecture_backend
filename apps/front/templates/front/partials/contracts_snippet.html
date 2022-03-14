@@ -2,7 +2,7 @@
 <div class="box">
     <p>Client : {{ contract.customer.company }}</p>
     <p>Status :
-        {% if contract.client.existing %}
+        {% if contract.status %}
         Validé
         {% else %}
         En attente

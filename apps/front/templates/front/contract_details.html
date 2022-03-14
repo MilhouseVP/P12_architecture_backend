@@ -8,7 +8,7 @@
 {% if contract %}
     <p>Société : {{ contract.customer.company }}</p>
     <p>Status :
-        {% if contract.client.existing %}
+        {% if contract.status %}
         Validé
         {% else %}
         En attente

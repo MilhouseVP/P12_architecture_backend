@@ -22,8 +22,10 @@ class ListSaleMixin:
 class ListCustomerMixin:
     def get_customer(self, instance):
         customer = instance.customer
-        serializer = ListCustomersSerializer(customer)
+        serializer = EmbeddedCustomerSerializer(customer)
         return serializer.data
+
+
 
 
 class CreateCustomerSerializer(ModelSerializer):
@@ -57,6 +59,12 @@ class CreateCustomerSerializer(ModelSerializer):
         user = self.context['request'].user
         validated_data['sale_contact'] = user
         return Customer.objects.create(**validated_data)
+
+
+class EmbeddedCustomerSerializer(ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = ['id', 'company', ]
 
 
 class ListCustomersSerializer(ListSaleMixin, ModelSerializer):

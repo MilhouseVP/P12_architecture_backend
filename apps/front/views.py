@@ -88,6 +88,8 @@ def home(request):
         if 'detail' in data:
             context = {'error': data['detail']}
         else:
+            for event in data['results']:
+                event['event_date'] = date_formating(event['event_date'])
             paginator = Paginator(data['results'], 5)
             page_number = request.GET.get('page')
             page_obj = paginator.get_page(page_number)
@@ -173,12 +175,17 @@ def search(request):
         type = request.GET['type']
         endpoint = endpoint + type_dict[type] + request.GET['search_input']
 
-        return_data = get_api_mixin(request, endpoint)
+        returned_data = get_api_mixin(request, endpoint)
 
-        if not return_data['results']:
+        if not returned_data['results']:
             context['empty'] = True
         else:
-            context['results'] = return_data['results']
+            for event in returned_data['results']:
+                if 'event_date' in event:
+                    event['event_date'] = date_formating(
+                        event['event_date'])
+            context['results'] = returned_data['results']
+
         return render(request, 'front/search.html', context)
 
     else:
