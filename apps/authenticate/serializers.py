@@ -19,6 +19,12 @@ class DetailCustomUserSerializer(ModelSerializer):
                   'role')
 
 
+class EmbedCustomUserSerializer(ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'email', ]
+
+
 class RegistrationSerializer(ModelSerializer):
     email = serializers.EmailField(
         required=True,

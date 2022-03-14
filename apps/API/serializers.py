@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.validators import UniqueTogetherValidator
 from apps.API.models import Customer, Contract, Event
-from apps.authenticate.serializers import ListCustomUserSerializer, \
+from apps.authenticate.serializers import EmbedCustomUserSerializer, \
     DetailCustomUserSerializer
 
 
@@ -15,7 +15,7 @@ class SaleMixin:
 class ListSaleMixin:
     def get_sale_contact(self, instance):
         sale = instance.sale_contact
-        serializer = ListCustomUserSerializer(sale)
+        serializer = EmbedCustomUserSerializer(sale)
         return serializer.data
 
 
@@ -24,8 +24,6 @@ class ListCustomerMixin:
         customer = instance.customer
         serializer = EmbeddedCustomerSerializer(customer)
         return serializer.data
-
-
 
 
 class CreateCustomerSerializer(ModelSerializer):
@@ -105,7 +103,8 @@ class ListContractSerializer(ListSaleMixin, ModelSerializer,
     class Meta:
         model = Contract
         fields = (
-        'id', 'customer', 'status', 'amount', 'sale_contact', 'event_created')
+            'id', 'customer', 'status', 'amount', 'sale_contact',
+            'event_created')
 
 
 class DetailContractSerializer(SaleMixin, ModelSerializer, ListCustomerMixin):
@@ -117,6 +116,7 @@ class DetailContractSerializer(SaleMixin, ModelSerializer, ListCustomerMixin):
         model = Contract
         fields = ('id', 'sale_contact', 'customer', 'date_created',
                   'date_updated', 'status', 'amount', 'payement_due', 'event')
+
     #
     def get_event(self, instance):
         try:
@@ -130,8 +130,9 @@ class DetailContractSerializer(SaleMixin, ModelSerializer, ListCustomerMixin):
 class CreateEventSerializer(ModelSerializer):
     class Meta:
         model = Event
-        fields = ('id', 'customer', 'support_contact', 'event_status', 'attendees',
-                  'event_date', 'note', 'contract')
+        fields = (
+        'id', 'customer', 'support_contact', 'event_status', 'attendees',
+        'event_date', 'note', 'contract')
 
 
 class ListEventSerializer(ModelSerializer, ListCustomerMixin):
@@ -146,7 +147,7 @@ class ListEventSerializer(ModelSerializer, ListCustomerMixin):
 
     def get_support_contact(self, instance):
         support = instance.support_contact
-        serializer = ListCustomUserSerializer(support)
+        serializer = EmbedCustomUserSerializer(support)
         return serializer.data
 
 
