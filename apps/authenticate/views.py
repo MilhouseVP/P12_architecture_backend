@@ -22,7 +22,7 @@ class UserViewset(ModelViewSet):
     filterset_class = UserFilter
 
     def get_permissions(self):
-        if self.action != ('list' or 'retrieve'):
+        if self.action not in ['list', 'retrieve'] :
             return self.edit_permissions
         return super().get_permissions()
 

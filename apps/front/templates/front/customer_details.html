@@ -21,7 +21,7 @@
         Non
         {% endif %}
     </p>
-    <p>Contact vente : {{ customer.sale_contact.email }}</p>
+    <p>Contact vente : <a href="{% url 'user_detail' user_id=customer.sale_contact.id %}">{{ customer.sale_contact.email }}</a></p>
     {% if user.id == customer.sale_contact.id or user.role == 'manager' %}
     <a href="{% url 'contract_create' customer_id=customer.id %}"><button>Créer un contrat</button></a>
     <a href="{% url 'customer_edit' edit_customer_id=customer.id %}"><button>Editer client</button></a>

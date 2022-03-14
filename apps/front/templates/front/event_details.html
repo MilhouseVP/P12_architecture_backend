@@ -6,12 +6,12 @@
     <p>{{ error.detail }}</p>
 {% endif %}
 {% if event %}
-    <p>Client : {{ event.customer.company }}</p>
+    <p>Client : <a href="{% url 'customer_detail' customer_id=event.customer.id %}">{{ event.customer.company }}</a></p>
     <p>Jauge : {{ event.attendees }}</p>
     <p>Date : {{ event.event_date }}</p>
     <p>Création : {{ event.date_created }}</p>
     <p>Modification : {{ event.date_updated }}</p>
-    <p>Contact support : {{ event.support_contact.email }}</p>
+    <p>Contact support : <a href="{% url 'user_detail' user_id=event.support_contact.id %}">{{ event.support_contact.email }}</a></p>
     <p>Status :
         {% if event.event_status %}
         En cours

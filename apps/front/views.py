@@ -483,16 +483,13 @@ def users(request):
 
 @login_required
 def user(request, user_id):
-    if 'manager' not in get_group(request.user):
-        return redirect('home')
+    endpoint = 'users/' + str(user_id) + '/'
+    data = get_api_mixin(request, endpoint)
+    if 'detail' in data:
+        context = {'error': data['detail']}
     else:
-        endpoint = 'users/' + str(user_id) + '/'
-        data = get_api_mixin(request, endpoint)
-        if 'detail' in data:
-            context = {'error': data['detail']}
-        else:
-            context = {'employee': data}
-        return render(request, 'front/user_details.html', context)
+        context = {'employee': data}
+    return render(request, 'front/user_details.html', context)
 
 
 @login_required

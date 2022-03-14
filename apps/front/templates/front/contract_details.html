@@ -6,7 +6,7 @@
     <p>{{ error.detail }}</p>
 {% endif %}
 {% if contract %}
-    <p>Société : {{ contract.customer.company }}</p>
+    <p>Société : <a href="{% url 'customer_detail' customer_id=contract.customer.id %}">{{ contract.customer.company }}</a></p>
     <p>Status :
         {% if contract.status %}
         Validé
@@ -18,7 +18,7 @@
     <p>Date de payement : {{ contract.payement_due }}</p>
     <p>Création : {{ contract.date_created }}</p>
     <p> Dérnière modification : {{ contract.date_updated }}</p>
-    <p>Contact vente : {{ contract.sale_contact.email }}</p>
+    <p>Contact vente : <a href="{% url 'user_detail' user_id=contract.sale_contact.id %}">{{ contract.sale_contact.email }}</a></p>
     {% if user.id == contract.sale_contact.id and not contract.event_created  or user.role == 'manager' and not contract.event_created %}
     <a href="{% url 'event_create' contract_id=contract.id customer_id=contract.customer.id %}"><button>Créer un evenement</button></a>
     {% elif contract.event %}

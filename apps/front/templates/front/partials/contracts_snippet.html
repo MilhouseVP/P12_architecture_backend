@@ -1,6 +1,6 @@
 {% for contract in contracts %}
 <div class="box">
-    <p>Client : {{ contract.customer.company }}</p>
+    <p>Client : <a href="{% url 'customer_detail' customer_id=contract.customer.id %}">{{ contract.customer.company }}</a></p>
     <p>Status :
         {% if contract.status %}
         Validé
@@ -9,7 +9,7 @@
         {% endif %}
     </p>
     <p>Montant : {{ contract.amount }}</p>
-    <p>Contact commercial : {{ contract.sale_contact.email }}</p>
+    <p>Contact commercial : <a href="{% url 'user_detail' user_id=contract.sale_contact.id %}">{{ contract.sale_contact.email }}</a></p>
 <a href="{% url 'contract_detail' cont_id=contract.id %}"><button>Détails</button></a>
 </div>
 {% endfor %}

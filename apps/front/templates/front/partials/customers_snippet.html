@@ -10,7 +10,7 @@
         Non
         {% endif %}
     </p>
-    <p>Contact vente : {{ client.sale_contact.email }}</p>
+    <p>Contact vente : <a href="{% url 'user_detail' user_id=client.sale_contact.id %}">{{ client.sale_contact.email }}</a></p>
     <a href="{% url 'customer_detail' customer_id=client.id %}"><button>Détails</button></a>
 </div>
 {% endfor %}
