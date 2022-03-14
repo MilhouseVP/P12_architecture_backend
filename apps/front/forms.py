@@ -46,6 +46,16 @@ class CustomerEditForm(forms.Form):
 
 
 class ContractForm(forms.Form):
+    def __init__(self, sales, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sales_choices = []
+        for employee in sales:
+            id = int(employee['id'])
+            mail = employee['email']
+            user_data = (id, mail)
+            self.sales_choices.append(user_data)
+        self.fields['sale_contact'] = forms.ChoiceField(
+            choices=self.sales_choices)
 
     amount = forms.IntegerField(min_value=0)
     payement_due = forms.DateField(label='Date de payement',
@@ -54,6 +64,17 @@ class ContractForm(forms.Form):
 
 
 class ContractEditForm(forms.Form):
+    def __init__(self, sales, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sales_choices = []
+        for employee in sales:
+            id = int(employee['id'])
+            mail = employee['email']
+            user_data = (id, mail)
+            self.sales_choices.append(user_data)
+        self.fields['sale_contact'] = forms.ChoiceField(
+            choices=self.sales_choices)
+
     amount = forms.IntegerField(min_value=0)
     payement_due = forms.DateField(label='Date de payement',
                                    widget=forms.DateInput(

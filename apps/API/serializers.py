@@ -92,13 +92,8 @@ class EmbeddedCustomerSerializer(ModelSerializer):
 class CreateContractSerializer(ModelSerializer):
     class Meta:
         model = Contract
-        fields = ('id', 'customer', 'amount', 'payement_due')
+        fields = ('id', 'customer', 'amount', 'payement_due', 'sale_contact')
 
-    def create(self, validated_data):
-        print(validated_data)
-        user = self.context['request'].user
-        validated_data['sale_contact'] = user
-        return Contract.objects.create(**validated_data)
 
 
 class ListContractSerializer(SaleMixin, ModelSerializer,

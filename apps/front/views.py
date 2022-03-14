@@ -314,16 +314,22 @@ def contract_create(request, customer_id):
     if 'support' in groups :
         return redirect('home')
     else:
-        contract_form = f.ContractForm()
-        context = {'contract_form': contract_form}
+        users_endpoint = 'users?role=sales'
+        sales_users = get_api_mixin(request, users_endpoint)
+        form = f.ContractForm(sales_users['results'])
+        if request.user.role == 'sales':
+            form.fields['sale_contact'].widget = forms.HiddenInput()
+            form.fields['sale_contact'].initial = request.user.id
+        context = {'contract_form': form}
         if request.method == 'POST':
             endpoint = 'contracts/'
-            contract_form = f.ContractForm(request.POST)
+            contract_form = f.ContractForm(sales_users['results'],
+                                           request.POST)
             if contract_form.is_valid():
                 data = contract_form.cleaned_data
                 body = {
                     'customer': customer_id,
-                    'sale_contact': request.user.id,
+                    'sale_contact': data['sale_contact'],
                     'amount': data['amount'],
                     'payement_due': data['payement_due']
                 }
@@ -339,10 +345,12 @@ def contract_edit(request, edit_cont_id):
     if 'support' in groups:
         return redirect('home')
     else:
-        form = f.ContractEditForm()
+        users_endpoint = 'users?role=sales'
+        sales_users = get_api_mixin(request, users_endpoint)
+        form = f.ContractEditForm(sales_users['results'])
         endpoint = 'contracts/' + str(edit_cont_id) + '/'
         if request.method == 'POST':
-            cont_form = f.ContractEditForm(request.POST)
+            cont_form = f.ContractEditForm(sales_users['results'], request.POST)
             if cont_form.is_valid():
                 body = cont_form.cleaned_data
                 patch_api_mixin(request, body=body, endpoint=endpoint)
