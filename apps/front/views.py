@@ -224,10 +224,12 @@ def customer(request, customer_id):
 @login_required
 def customer_create(request):
     groups = get_group(request.user)
-    if 'manager' in groups or 'sales' not in groups :
+    if 'support' in groups :
         return redirect('home')
     else:
-        form = f.CustomerForm()
+        users_endpoint = 'users?role=sales'
+        sales_users = get_api_mixin(request, users_endpoint)
+        form = f.CustomerEditForm(sales_users['results'])
         endpoint = 'customers/'
         if request.user.role == 'sales':
             form.fields['sale_contact'].widget = forms.HiddenInput()
@@ -248,7 +250,7 @@ def customer_create(request):
 @login_required
 def customer_edit(request, edit_customer_id):
     groups = get_group(request.user)
-    if 'manager' in groups or 'sales' not in groups :
+    if 'support' in groups :
         return redirect('home')
     else:
         users_endpoint = 'users?role=sales'
@@ -309,7 +311,7 @@ def contract(request, cont_id):
 @login_required
 def contract_create(request, customer_id):
     groups = get_group(request.user)
-    if 'manager' in groups or 'sales' not in groups :
+    if 'support' in groups :
         return redirect('home')
     else:
         contract_form = f.ContractForm()
@@ -334,7 +336,7 @@ def contract_create(request, customer_id):
 @login_required
 def contract_edit(request, edit_cont_id):
     groups = get_group(request.user)
-    if 'manager' in groups or 'sales' not in groups:
+    if 'support' in groups:
         return redirect('home')
     else:
         form = f.ContractEditForm()
@@ -393,14 +395,16 @@ def event(request, event_id):
 @login_required
 def event_create(request, contract_id, customer_id):
     groups = get_group(request.user)
-    if 'manager' in groups or 'sales' not in groups:
+    if 'support' in groups:
         return redirect('home')
     else:
-        event_form = f.EventForm()
+        users_endpoint = 'users?role=support'
+        sales_users = get_api_mixin(request, users_endpoint)
+        event_form = f.EventEditForm(sales_users['results'])
         context = {'event_form': event_form}
         if request.method == 'POST':
             endpoint = 'events/'
-            event_form = f.EventForm(request.POST)
+            event_form = f.EventForm(sales_users['results'], request.POST)
             if event_form.is_valid():
                 data = event_form.cleaned_data
                 body = {
@@ -425,13 +429,15 @@ def event_create(request, contract_id, customer_id):
 @login_required
 def event_edit(request, edit_event_id):
     groups = get_group(request.user)
-    if 'manager' in groups or 'support' not in groups:
+    if 'sales' in groups:
         return redirect('home')
     else:
-        form = f.EventEditForm()
+        users_endpoint = 'users?role=support'
+        support_users = get_api_mixin(request, users_endpoint)
+        event_form = f.EventEditForm(support_users['results'])
         endpoint = 'events/' + str(edit_event_id) + '/'
         if request.method == 'POST':
-            event_form = f.EventEditForm(request.POST)
+            event_form = f.EventEditForm(support_users['results'], request.POST)
             if event_form.is_valid():
                 body = event_form.cleaned_data
                 patch_api_mixin(request, body=body, endpoint=endpoint)
@@ -441,13 +447,13 @@ def event_edit(request, edit_event_id):
             for key in data:
                 try:
                     if key == 'event_date':
-                        form.fields[key].initial = datetime.strptime(
+                        event_form.fields[key].initial = datetime.strptime(
                             data[key], '%Y-%m-%dT%H:%M:%SZ')
                     else:
-                        form.fields[key].initial = data[key]
+                        event_form.fields[key].initial = data[key]
                 except KeyError:
                     pass
-            context = {'event_form': form}
+            context = {'event_form': event_form}
             return render(request, 'front/event_edit.html', context=context)
 
 

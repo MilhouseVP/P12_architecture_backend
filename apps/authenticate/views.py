@@ -16,7 +16,7 @@ class RegisterView(CreateAPIView):
 
 
 class UserViewset(ModelViewSet):
-    permission_classes = [IsAuthenticated, perms.IsSales]
+    permission_classes = [IsAuthenticated]
     edit_permissions = [IsAuthenticated, perms.IsManager]
     serializer_class = DetailCustomUserSerializer
     filterset_class = UserFilter

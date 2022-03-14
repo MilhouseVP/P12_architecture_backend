@@ -139,6 +139,12 @@ class EmbedContractSerializer(ModelSerializer):
         fields = ['id']
 
 
+class EditContractSerializer(ModelSerializer):
+    class Meta:
+        model = Contract
+        fields = '__all__'
+
+
 class CreateEventSerializer(ModelSerializer):
     class Meta:
         model = Event
@@ -182,3 +188,9 @@ class EmbedEventSerializer(ModelSerializer):
     class Meta:
         model = Event
         fields = ['id']
+
+
+class EditEventSerializer(ModelSerializer):
+    class Meta:
+        model = Event
+        fields = '__all__'

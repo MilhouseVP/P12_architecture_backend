@@ -56,6 +56,7 @@ class ContractViewset(ApiViewsetMixin, ModelViewSet):
     serializer_class = ListContractSerializer
     create_serializer_class = CreateContractSerializer
     detail_serializer_class = DetailContractSerializer
+    edit_serializer_class = EditContractSerializer
     filterset_class = ContractFilter
 
     def get_queryset(self):
@@ -66,6 +67,7 @@ class EventViewset(ApiViewsetMixin, ModelViewSet):
     serializer_class = ListEventSerializer
     create_serializer_class = CreateEventSerializer
     detail_serializer_class = DetailEventSerializer
+    edit_serializer_class = EditEventSerializer
 
     edit_permissions = [IsAuthenticated, perms.IsSupportReferee]
     create_permissions = [IsAuthenticated, perms.IsSales]
