@@ -5,14 +5,14 @@ from apps.authenticate.serializers import EmbedCustomUserSerializer, \
     DetailCustomUserSerializer
 
 
+# class SaleMixin:
+#     def get_sale_contact(self, instance):
+#         sale = instance.sale_contact
+#         serializer = DetailCustomUserSerializer(sale)
+#         return serializer.data
+
+
 class SaleMixin:
-    def get_sale_contact(self, instance):
-        sale = instance.sale_contact
-        serializer = DetailCustomUserSerializer(sale)
-        return serializer.data
-
-
-class ListSaleMixin:
     def get_sale_contact(self, instance):
         sale = instance.sale_contact
         serializer = EmbedCustomUserSerializer(sale)
@@ -65,7 +65,7 @@ class EmbeddedCustomerSerializer(ModelSerializer):
         fields = ['id', 'company', ]
 
 
-class ListCustomersSerializer(ListSaleMixin, ModelSerializer):
+class ListCustomersSerializer(SaleMixin, ModelSerializer):
     sale_contact = SerializerMethodField()
 
     class Meta:
@@ -95,7 +95,7 @@ class CreateContractSerializer(ModelSerializer):
         return Contract.objects.create(**validated_data)
 
 
-class ListContractSerializer(ListSaleMixin, ModelSerializer,
+class ListContractSerializer(SaleMixin, ModelSerializer,
                              ListCustomerMixin):
     sale_contact = SerializerMethodField()
     customer = SerializerMethodField()
