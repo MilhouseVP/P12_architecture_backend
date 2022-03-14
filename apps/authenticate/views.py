@@ -11,17 +11,27 @@ from .filters import UserFilter
 
 
 class RegisterView(CreateAPIView):
+    """
+    Viewset for registering users
+    """
     queryset = CustomUser.objects.all()
     serializer_class = RegistrationSerializer
 
 
 class UserViewset(ModelViewSet):
+    """
+    Viewset for registered users
+    """
     permission_classes = [IsAuthenticated]
     edit_permissions = [IsAuthenticated, perms.IsManager]
     serializer_class = DetailCustomUserSerializer
     filterset_class = UserFilter
 
     def get_permissions(self):
+        """
+        permissions selection logic
+        :return: Booelans for each permissions in selected permission_classes
+        """
         if self.action not in ['list', 'retrieve'] :
             return self.edit_permissions
         return super().get_permissions()
@@ -31,6 +41,9 @@ class UserViewset(ModelViewSet):
 
 
 class UpdatePassword(ModelViewSet):
+    """
+    Viewset for users to change their password
+    """
     permission_classes = [IsAuthenticated]
 
     def get_object(self):

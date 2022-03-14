@@ -6,6 +6,9 @@ from apps.authenticate.serializers import EmbedCustomUserSerializer, \
 
 
 class ContractMixin:
+    """
+    Mixin that get contract data with serializer method fields
+    """
     def get_contract(self, instance):
         sale = instance.contract
         serializer = EmbedContractSerializer(sale)
@@ -13,6 +16,9 @@ class ContractMixin:
 
 
 class SaleMixin:
+    """
+    Mixin that get sale_contact data wit serilazer method fields
+    """
     def get_sale_contact(self, instance):
         sale = instance.sale_contact
         serializer = EmbedCustomUserSerializer(sale)
@@ -20,6 +26,9 @@ class SaleMixin:
 
 
 class CustomerMixin:
+    """
+    Mixin that get customer data with serializer method fields
+    """
     def get_customer(self, instance):
         customer = instance.customer
         serializer = EmbeddedCustomerSerializer(customer)
@@ -27,6 +36,10 @@ class CustomerMixin:
 
 
 class CreateCustomerSerializer(ModelSerializer):
+    """
+    Serializer that handle Customer creation
+    Email have to be unique for each customer
+    """
     class Meta:
         model = Customer
         fields = (
@@ -60,6 +73,9 @@ class CreateCustomerSerializer(ModelSerializer):
 
 
 class ListCustomersSerializer(SaleMixin, ModelSerializer):
+    """
+    Serializer for customers list display
+    """
     sale_contact = SerializerMethodField()
 
     class Meta:
@@ -70,6 +86,9 @@ class ListCustomersSerializer(SaleMixin, ModelSerializer):
 
 
 class DetailCustomersSerializer(SaleMixin, ModelSerializer):
+    """
+    serilaizer for detail customer display
+    """
     sale_contact = SerializerMethodField()
 
     class Meta:
@@ -78,18 +97,27 @@ class DetailCustomersSerializer(SaleMixin, ModelSerializer):
 
 
 class EditCustomersSerializer(SaleMixin, ModelSerializer):
+    """
+    Edit serilaizer for customer
+    """
     class Meta:
         model = Customer
         fields = '__all__'
 
 
 class EmbeddedCustomerSerializer(ModelSerializer):
+    """
+    Serializer for embedded customer data
+    """
     class Meta:
         model = Customer
         fields = ['id', 'company', ]
 
 
 class CreateContractSerializer(ModelSerializer):
+    """
+    Serializer for contract creation
+    """
     class Meta:
         model = Contract
         fields = ('id', 'customer', 'amount', 'payement_due', 'sale_contact')
@@ -98,6 +126,9 @@ class CreateContractSerializer(ModelSerializer):
 
 class ListContractSerializer(SaleMixin, ModelSerializer,
                              CustomerMixin):
+    """
+    serializer for contract list display
+    """
     sale_contact = SerializerMethodField()
     customer = SerializerMethodField()
 
@@ -108,6 +139,9 @@ class ListContractSerializer(SaleMixin, ModelSerializer,
 
 
 class DetailContractSerializer(SaleMixin, ModelSerializer, CustomerMixin):
+    """
+    serializer for contract details display
+    """
     sale_contact = SerializerMethodField()
     customer = SerializerMethodField()
     event = SerializerMethodField()
@@ -129,18 +163,27 @@ class DetailContractSerializer(SaleMixin, ModelSerializer, CustomerMixin):
 
 
 class EmbedContractSerializer(ModelSerializer):
+    """
+    serializer for embedded contract data
+    """
     class Meta:
         model = Contract
         fields = ['id']
 
 
 class EditContractSerializer(ModelSerializer):
+    """
+    serializer for editing contract
+    """
     class Meta:
         model = Contract
         fields = '__all__'
 
 
 class CreateEventSerializer(ModelSerializer):
+    """
+    serializer for event creation
+    """
     class Meta:
         model = Event
         fields = (
@@ -149,6 +192,9 @@ class CreateEventSerializer(ModelSerializer):
 
 
 class ListEventSerializer(ModelSerializer, CustomerMixin):
+    """
+    serializer for events list display
+    """
     support_contact = SerializerMethodField()
     customer = SerializerMethodField()
 
@@ -165,6 +211,9 @@ class ListEventSerializer(ModelSerializer, CustomerMixin):
 
 
 class DetailEventSerializer(ModelSerializer, CustomerMixin, ContractMixin):
+    """
+    serializer for detail event view
+    """
     support_contact = SerializerMethodField()
     customer = SerializerMethodField()
     contract = SerializerMethodField()
@@ -180,12 +229,18 @@ class DetailEventSerializer(ModelSerializer, CustomerMixin, ContractMixin):
 
 
 class EmbedEventSerializer(ModelSerializer):
+    """
+    serializer for embedded event data
+    """
     class Meta:
         model = Event
         fields = ['id']
 
 
 class EditEventSerializer(ModelSerializer):
+    """
+    serializer for editing event
+    """
     class Meta:
         model = Event
         fields = '__all__'

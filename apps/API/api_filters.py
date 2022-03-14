@@ -2,6 +2,9 @@ from django_filters import rest_framework as filters
 from .models import *
 
 class ContractFilter(filters.FilterSet):
+    """
+    Filters for ContractViewset
+    """
     date_contains = filters.CharFilter(field_name='date_created',
                                        lookup_expr='icontains')
 
@@ -18,6 +21,9 @@ class ContractFilter(filters.FilterSet):
 
 
 class EventFilter(filters.FilterSet):
+    """
+    Filters for EventViewset
+    """
     date_contains = filters.CharFilter(field_name='event_date',
                                        lookup_expr='icontains')
     class Meta:
@@ -32,6 +38,9 @@ class EventFilter(filters.FilterSet):
 
 
 class CustomerFilter(filters.FilterSet):
+    """
+    Filters for CustomerViewset
+    """
     class Meta:
         model = Customer
         fields = [

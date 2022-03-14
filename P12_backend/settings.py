@@ -157,30 +157,29 @@ SIMPLE_JWT = {
 
     'ACCESS_TOKEN_LIFETIME': timedelta(days=10)
 }
-# TODO: decommenter à la fin du developpement
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'verbose': {
-#             'format': '{levelname} {asctime} {request.method} '
-#                       '{request.user.username} {message}',
-#             'style': '{',
-#         },
-#     },
-#     'handlers': {
-#         'file': {
-#             'class': 'logging.FileHandler',
-#             'filename': 'debug.log',
-#             'formatter': 'verbose',
-#             'level': 'WARNING',
-#         },
-#     },
-#     'loggers': {
-#         'root': {
-#             'handlers': ['file'],
-#             'propagate': False,
-#         },
-#     },
-# }
-#
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {request.method} '
+                      '{request.user.username} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+            'formatter': 'verbose',
+            'level': 'WARNING',
+        },
+    },
+    'loggers': {
+        'root': {
+            'handlers': ['file'],
+            'propagate': False,
+        },
+    },
+}

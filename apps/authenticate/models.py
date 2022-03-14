@@ -3,6 +3,9 @@ from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser):
+    """
+    Custom User model extending AbtractUser
+    """
     MANAGER = 'manager'
     SALES = 'sales'
     SUPPORT = 'support'

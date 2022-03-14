@@ -3,6 +3,9 @@ from apps.authenticate.models import CustomUser as User
 
 
 class Customer(models.Model):
+    """
+    Customer model
+    """
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     phone = models.CharField(max_length=20)
@@ -20,6 +23,9 @@ class Customer(models.Model):
 
 
 class Contract(models.Model):
+    """
+    Contract model
+    """
     sale_contact = models.ForeignKey(to=User, on_delete=models.SET_NULL,
                                      null=True)
     customer = models.ForeignKey(to=Customer, on_delete=models.CASCADE)
@@ -36,6 +42,9 @@ class Contract(models.Model):
 
 
 class Event(models.Model):
+    """
+    Event model
+    """
     customer = models.ForeignKey(to=Customer, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
