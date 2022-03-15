@@ -54,6 +54,7 @@ urlpatterns = [
     path('account/', front.account, name= 'account'),
     path('search/', front.search, name='search'),
 
+    # Customers endpoint
     path('customers/', front.customers, name='customers'),
     path('customer/<int:customer_id>/', front.customer,
          name='customer_detail'),
@@ -61,6 +62,7 @@ urlpatterns = [
     path('customer/<int:edit_customer_id>/edit/', front.customer_edit,
          name='customer_edit'),
 
+    # contracts endpoints
     path('contracts/', front.contracts, name='contracts'),
     path('contract/<int:cont_id>/', front.contract, name='contract_detail'),
     path('contract/<int:customer_id>/create/', front.contract_create,
@@ -68,6 +70,7 @@ urlpatterns = [
     path('contract/<int:edit_cont_id>/edit/', front.contract_edit,
          name='contract_edit'),
 
+    # events endpoints
     path('events/', front.events, name='events'),
     path('event/<int:event_id>/', front.event, name='event_detail'),
     path('event/<int:contract_id>/<int:customer_id>/create/',
@@ -75,6 +78,7 @@ urlpatterns = [
     path('event/<int:edit_event_id>/edit/', front.event_edit,
          name='event_edit'),
 
+    # users endpoint
     path('users/', front.users, name='users'),
     path('user/<int:user_id>/', front.user, name='user_detail'),
     path('user/create/', front.user_create, name='user_create'),

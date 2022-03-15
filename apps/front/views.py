@@ -27,6 +27,11 @@ class LoginView(BaseLogin):
 
 
 def date_formating(date):
+    """
+    function to format DB date/datetime fields
+    :param date: date string from DB
+    :return: properly format string
+    """
     if len(date) == 27:
         dt = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%fZ')
         return dt.strftime('Le %d/%m/%Y, à %H:%M:%S')
@@ -39,6 +44,12 @@ def date_formating(date):
 
 
 def get_api_mixin(request, endpoint):
+    """
+    function to send a GET request to the API
+    :param request: http request from view
+    :param endpoint: API endpoint
+    :return: dict with json response from the API
+    """
     url = 'http://127.0.0.1:8000/api/' + endpoint
     token = request.COOKIES.get('access')
     head = {'Authorization': 'Bearer ' + token}
@@ -52,6 +63,13 @@ def get_api_mixin(request, endpoint):
 
 
 def post_api_mixin(request, body, endpoint):
+    """
+    function to send a POST request to the API
+    :param request: http request from view
+    :param body: dict with data to send to the API
+    :param endpoint: API endpoint
+    :return: dict with json response from the API
+    """
     url = 'http://127.0.0.1:8000/api/' + endpoint
     token = request.COOKIES.get('access')
     head = {'Authorization': 'Bearer ' + token}
@@ -60,6 +78,13 @@ def post_api_mixin(request, body, endpoint):
 
 
 def patch_api_mixin(request, body, endpoint):
+    """
+    function to send a PATCH request to the API
+    :param request: http request from view
+    :param body: dict with data to send to the API
+    :param endpoint: API endpoint
+    :return: dict with json response from the API
+    """
     url = 'http://127.0.0.1:8000/api/' + endpoint
     token = request.COOKIES.get('access')
     head = {'Authorization': 'Bearer ' + token}
@@ -68,6 +93,12 @@ def patch_api_mixin(request, body, endpoint):
 
 
 def delete_api_mixin(request, endpoint):
+    """
+    function to send a DELETE request to the API
+    :param request: http request from view
+    :param endpoint: API endpoint
+    :return: None
+    """
     url = 'http://127.0.0.1:8000/api/' + endpoint
     token = request.COOKIES.get('access')
     head = {'Authorization': 'Bearer ' + token}
@@ -75,6 +106,11 @@ def delete_api_mixin(request, endpoint):
 
 
 def get_group(current_user):
+    """
+    function to get user's groups
+    :param current_user: user object
+    :return: list of groups' name
+    """
     group_list = []
     for group in current_user.groups.all():
         group_list.append(group.name)
@@ -83,6 +119,11 @@ def get_group(current_user):
 
 @login_required
 def home(request):
+    """
+    Home view
+    :param request: HTTP request
+    :return: HTML template
+    """
     if 'support' in get_group(request.user):
         endpoint = 'events?support_contact=' + str(request.user.id)
         data = get_api_mixin(request, endpoint)
@@ -107,17 +148,19 @@ def home(request):
             page_obj = paginator.get_page(page_number)
             context = {'instances': page_obj, 'contracts': True}
     else:
-        # 'manager' in get_group(request.user):
         return redirect('users')
-    # else:
-    #     context = {'error': {'detail': "Rien pour l'instant"}}
     return render(request, 'front/home.html', context)
 
 
 @login_required
 def my_customers(request):
+    """
+    View that display user's customers
+    :param request: HTTP request
+    :return: HTML template
+    """
     groups = get_group(request.user)
-    if 'manager' in groups or 'sales' not in groups :
+    if 'support' in groups or 'manager' in groups:
         return redirect('home')
     else:
         endpoint = 'customers?sale_contact=' + str(request.user.id)
@@ -134,6 +177,11 @@ def my_customers(request):
 
 @login_required
 def account(request):
+    """
+    View that allow users to change their password
+    :param request: HTTP request
+    :return: HTML template
+    """
     form = f.UserPasswordForm()
     context = {'password_form': form}
     endpoint = 'password_update/'
@@ -152,6 +200,11 @@ def account(request):
 
 @login_required
 def search(request):
+    """
+    search view
+    :param request: HTTP request
+    :return: HTML template
+    """
     endpoint = ''
     context = {}
 
@@ -198,6 +251,11 @@ def search(request):
 
 @login_required
 def customers(request):
+    """
+    View that display all customers in DB
+    :param request: HTTP request
+    :return: HTML template
+    """
     endpoint = 'customers/'
     data = get_api_mixin(request, endpoint)
     if 'detail' in data:
@@ -212,6 +270,12 @@ def customers(request):
 
 @login_required
 def customer(request, customer_id):
+    """
+    view that display details of one customer
+    :param request: HTTP request
+    :param customer_id: int, customer pk
+    :return: HTML template
+    """
     endpoint = 'customers/' + str(customer_id) + '/'
     data = get_api_mixin(request, endpoint)
     if 'detail' in data:
@@ -225,8 +289,13 @@ def customer(request, customer_id):
 
 @login_required
 def customer_create(request):
+    """
+    view to create new customer
+    :param request: HTTP request
+    :return: HTML template
+    """
     groups = get_group(request.user)
-    if 'support' in groups :
+    if 'support' in groups:
         return redirect('home')
     else:
         users_endpoint = 'users?role=sales'
@@ -251,8 +320,14 @@ def customer_create(request):
 
 @login_required
 def customer_edit(request, edit_customer_id):
+    """
+    view to edit customer's data
+    :param request: HTTP request
+    :param edit_customer_id: int, customer PK
+    :return: HTML template
+    """
     groups = get_group(request.user)
-    if 'support' in groups :
+    if 'support' in groups:
         return redirect('home')
     else:
         users_endpoint = 'users?role=sales'
@@ -284,6 +359,11 @@ def customer_edit(request, edit_customer_id):
 
 @login_required
 def contracts(request):
+    """
+    view displaying all contracts in DB
+    :param request: HTTP request
+    :return: HTML template
+    """
     endpoint = 'contracts/'
     data = get_api_mixin(request, endpoint)
     if 'detail' in data:
@@ -298,6 +378,12 @@ def contracts(request):
 
 @login_required
 def contract(request, cont_id):
+    """
+    View displaying detail of a contract
+    :param request: HTTP request
+    :param cont_id: int, contract pk
+    :return: HTML template
+    """
     endpoint = 'contracts/' + str(cont_id) + '/'
     data = get_api_mixin(request, endpoint)
     if 'detail' in data:
@@ -312,8 +398,14 @@ def contract(request, cont_id):
 
 @login_required
 def contract_create(request, customer_id):
+    """
+    view for creat a new contract
+    :param request: HTTP request
+    :param customer_id: int, a customer pk which contract will be linked to
+    :return: HTML template
+    """
     groups = get_group(request.user)
-    if 'support' in groups :
+    if 'support' in groups:
         return redirect('home')
     else:
         users_endpoint = 'users?role=sales'
@@ -343,6 +435,12 @@ def contract_create(request, customer_id):
 
 @login_required
 def contract_edit(request, edit_cont_id):
+    """
+    View to edit a contract
+    :param request: HTTP request
+    :param edit_cont_id: int, contract pk
+    :return: HTML template
+    """
     groups = get_group(request.user)
     if 'support' in groups:
         return redirect('home')
@@ -352,7 +450,8 @@ def contract_edit(request, edit_cont_id):
         form = f.ContractEditForm(sales_users['results'])
         endpoint = 'contracts/' + str(edit_cont_id) + '/'
         if request.method == 'POST':
-            cont_form = f.ContractEditForm(sales_users['results'], request.POST)
+            cont_form = f.ContractEditForm(sales_users['results'],
+                                           request.POST)
             if cont_form.is_valid():
                 body = cont_form.cleaned_data
                 patch_api_mixin(request, body=body, endpoint=endpoint)
@@ -374,6 +473,11 @@ def contract_edit(request, edit_cont_id):
 
 @login_required
 def events(request):
+    """
+    view displaying all events in DB
+    :param request: HTTP request
+    :return: HTML template
+    """
     endpoint = 'events/'
     data = get_api_mixin(request, endpoint)
     if 'detail' in data:
@@ -390,6 +494,12 @@ def events(request):
 
 @login_required
 def event(request, event_id):
+    """
+    View displaying details of an event
+    :param request: HTTP request
+    :param event_id: int, event pk
+    :return: HTML template
+    """
     endpoint = 'events/' + str(event_id) + '/'
     data = get_api_mixin(request, endpoint)
     if 'detail' in data:
@@ -404,6 +514,13 @@ def event(request, event_id):
 
 @login_required
 def event_create(request, contract_id, customer_id):
+    """
+    view to create an event
+    :param request: HTTP request
+    :param contract_id: int, contract pk, which event will be linked to
+    :param customer_id: int, customer pk, which event will be linked to
+    :return: HTML template
+    """
     groups = get_group(request.user)
     if 'support' in groups:
         return redirect('home')
@@ -438,6 +555,12 @@ def event_create(request, contract_id, customer_id):
 
 @login_required
 def event_edit(request, edit_event_id):
+    """
+    view to edit an event
+    :param request: HTTP request
+    :param edit_event_id: int, event pk
+    :return: HTML template
+    """
     groups = get_group(request.user)
     if 'sales' in groups:
         return redirect('home')
@@ -447,7 +570,8 @@ def event_edit(request, edit_event_id):
         event_form = f.EventEditForm(support_users['results'])
         endpoint = 'events/' + str(edit_event_id) + '/'
         if request.method == 'POST':
-            event_form = f.EventEditForm(support_users['results'], request.POST)
+            event_form = f.EventEditForm(support_users['results'],
+                                         request.POST)
             if event_form.is_valid():
                 body = event_form.cleaned_data
                 patch_api_mixin(request, body=body, endpoint=endpoint)
@@ -469,6 +593,11 @@ def event_edit(request, edit_event_id):
 
 @login_required
 def users(request):
+    """
+    view displaying all users in DB, only accessible to managers
+    :param request: HTTP request
+    :return: HTML template
+    """
     if 'manager' not in get_group(request.user):
         return redirect('home')
     else:
@@ -483,6 +612,12 @@ def users(request):
 
 @login_required
 def user(request, user_id):
+    """
+    View displaying detail of an user, all user can access it
+    :param request: HTTP request
+    :param user_id: int, user pk
+    :return: HTML template
+    """
     endpoint = 'users/' + str(user_id) + '/'
     data = get_api_mixin(request, endpoint)
     if 'detail' in data:
@@ -494,6 +629,11 @@ def user(request, user_id):
 
 @login_required
 def user_create(request):
+    """
+    View to create an user, only accessible to managers
+    :param request: HTTP request
+    :return: HTML template
+    """
     if 'manager' not in get_group(request.user):
         return redirect('home')
     else:
@@ -513,6 +653,12 @@ def user_create(request):
 
 @login_required
 def user_edit(request, edit_user_id):
+    """
+    View to edit an user, only acccessible to manager
+    :param request: HTTP request
+    :param edit_user_id: int, user pk
+    :return: HTML template
+    """
     if 'manager' not in get_group(request.user):
         return redirect('home')
     else:
@@ -537,6 +683,12 @@ def user_edit(request, edit_user_id):
 
 @login_required
 def user_delete(request, user_id):
+    """
+    view to delete an user, only accessible to managers
+    :param request: HTTP request
+    :param user_id: int, user pk
+    :return: HTML template
+    """
     if 'manager' not in get_group(request.user):
         return redirect('home')
     else:

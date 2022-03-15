@@ -3,6 +3,10 @@ from apps.authenticate.models import CustomUser
 
 
 class CustomerForm(forms.Form):
+    """
+    Customer creation form, wich take a dict as an argmuent to display sales
+    users return from API
+    """
     def __init__(self, sales, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.sales_choices = []
@@ -25,6 +29,10 @@ class CustomerForm(forms.Form):
 
 
 class CustomerEditForm(forms.Form):
+    """
+    Customer edit form, wich take a dict as an argmuent to display sales
+    users return from API
+    """
     def __init__(self, sales, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.sales_choices = []
@@ -46,6 +54,10 @@ class CustomerEditForm(forms.Form):
 
 
 class ContractForm(forms.Form):
+    """
+    Contract creation form, wich take a dict as an argmuent to display sales
+    users return from API
+    """
     def __init__(self, sales, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.sales_choices = []
@@ -64,6 +76,10 @@ class ContractForm(forms.Form):
 
 
 class ContractEditForm(forms.Form):
+    """
+    Contract edition form, wich take a dict as an argmuent to display sales
+    users return from API
+    """
     def __init__(self, sales, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.sales_choices = []
@@ -83,6 +99,10 @@ class ContractEditForm(forms.Form):
 
 
 class EventForm(forms.Form):
+    """
+    Event creation form, wich take a dict as an argmuent to display support
+    users return from API
+    """
     def __init__(self, support, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.support_choices = []
@@ -101,6 +121,10 @@ class EventForm(forms.Form):
 
 
 class EventEditForm(forms.Form):
+    """
+    Event creation form, wich take a dict as an argmuent to display support
+    users return from API
+    """
     def __init__(self, support, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.support_choices = []
@@ -120,6 +144,9 @@ class EventEditForm(forms.Form):
 
 
 class UserForm(forms.Form):
+    """
+    User creation form
+    """
     MANAGER = 'manager'
     SALES = 'sales'
     SUPPORT = 'support'
@@ -140,6 +167,9 @@ class UserForm(forms.Form):
 
 
 class UserEditForm(forms.Form):
+    """
+    user edit form
+    """
     MANAGER = 'manager'
     SALES = 'sales'
     SUPPORT = 'support'
@@ -158,5 +188,8 @@ class UserEditForm(forms.Form):
 
 
 class UserPasswordForm(forms.Form):
+    """
+    user password change form
+    """
     old_password = forms.CharField(min_length=8, widget=forms.PasswordInput)
     new_password = forms.CharField(min_length=8, widget=forms.PasswordInput)
