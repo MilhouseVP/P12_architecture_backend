@@ -36,9 +36,9 @@
 
 (L'environnement virtuel et les modules n'ont besoin d'etre installés qu'une seul fois, par la suite, vous devez juste activer l'environnement virtuel et lancer le serveur.)
 
-## parametrage de la base de données :
+## Paramètrage de la base de données :
 
-Le projet est parametré pour utiliser une base de donnée PostgreSQL, avec les caracateristiques suivantes :
+Le projet est paramètré pour utiliser une base de donnée PostgreSQL, avec les caracateristiques suivantes :
 
 > - database name : db_epicevents
 > - db username : postgres
