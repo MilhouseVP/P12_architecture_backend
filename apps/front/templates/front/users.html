@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>tout les utilisateurs</h2>
-    {% if user.role == 'manager' %}
+    {% if user.is_manager %}
         <a href="{% url 'user_create' %}"><button>Nouvel utilisateur</button></a>
     {% endif %}
 {% if error %}

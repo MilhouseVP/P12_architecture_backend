@@ -22,3 +22,12 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+
+    def is_manager(self):
+        return self.groups.filter(name='manager').exists()
+
+    def is_sales(self):
+        return self.groups.filter(name='sales').exists()
+
+    def is_support(self):
+        return self.groups.fitler(name='support').exists()

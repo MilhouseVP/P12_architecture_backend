@@ -21,7 +21,7 @@
     </p>
     <p>Note : {{ event.note }}</p>
     <a href="{% url 'contract_detail' cont_id=event.contract.id %}"><button>Contrat</button></a>
-    {% if user.id == event.support_contact.id or user.role == 'manager' %}
+    {% if user.id == event.support_contact.id or user.is_manager %}
     <a href="{% url 'event_edit' edit_event_id=event.id %}"><button>Editer</button></a>
     {% endif %}
 {% endif %}

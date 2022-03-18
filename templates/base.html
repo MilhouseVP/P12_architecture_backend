@@ -17,12 +17,12 @@
                 <li><a class ="nav__item" href="{% url 'customers' %}">Clients</a></li>
                 <li><a class ="nav__item" href="{% url 'contracts' %}">Contracts</a></li>
                 <li><a class ="nav__item" href="{% url 'events' %}">Evènements</a></li>
-                {% if user.role == 'manager' %}
+                {% if user.is_manager %}
                 <li><a class ="nav__item" href="{% url 'users' %}">Utilisateurs</a></li>
-                {% elif user.role == 'sales' %}
+                    {% elif user.is_sales %}
                 <li><a class ="nav__item" href="{% url 'my_customers' %}">Mes clients</a></li>
                 {% endif %}
-                {% if user.role != 'manager' %}
+                    {% if not user.is_manager %}
                 <li><a class ="nav__item" href="{% url 'home' %}">Mes projets</a></li>
                 {% endif %}
                 <li><a class ="nav__item" href="{% url 'search' %}">Recherche</a></li>

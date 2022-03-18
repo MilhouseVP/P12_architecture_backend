@@ -19,12 +19,12 @@
     <p>Création : {{ contract.date_created }}</p>
     <p> Dérnière modification : {{ contract.date_updated }}</p>
     <p>Contact vente : <a href="{% url 'user_detail' user_id=contract.sale_contact.id %}">{{ contract.sale_contact.email }}</a></p>
-    {% if user.id == contract.sale_contact.id and not contract.event_created  or user.role == 'manager' and not contract.event_created %}
+    {% if user.id == contract.sale_contact.id and not contract.event_created  or user.is_manager and not contract.event_created %}
     <a href="{% url 'event_create' contract_id=contract.id customer_id=contract.customer.id %}"><button>Créer un evenement</button></a>
     {% elif contract.event %}
     <a href="{% url 'event_detail' event_id=contract.event.id %}"><button>voir l'événement</button></a>
     {% endif %}
-    {% if user.id == contract.sale_contact.id or user.role == 'manager'%}
+    {% if user.id == contract.sale_contact.id or user.is_manager%}
         <a href="{% url 'contract_edit' edit_cont_id=contract.id %}"><button>Editer</button></a>
     {% endif %}
 {% endif %}

@@ -208,12 +208,16 @@ def search(request):
     endpoint = ''
     context = {}
 
+    # dict used to add first part of the API's endpoint and a context keyword
+    # to display proppers snippets for the results
     search_dict = {
         'customer': ['customers?', 'customer'],
         'contract': ['contracts?', 'contract'],
         'event': ['events?', 'event']
     }
 
+    # dict used to add search parameter to API's endpoint depending on the user
+    # selection
     type_dict = {
         'email': 'email=',
         'last_name': 'last_name=',
@@ -302,7 +306,7 @@ def customer_create(request):
         sales_users = get_api_mixin(request, users_endpoint)
         form = f.CustomerEditForm(sales_users['results'])
         endpoint = 'customers/'
-        if request.user.role == 'sales':
+        if request.user.is_sales():
             form.fields['sale_contact'].widget = forms.HiddenInput()
             form.fields['sale_contact'].initial = request.user.id
         context = {'customer_form': form}
@@ -411,7 +415,7 @@ def contract_create(request, customer_id):
         users_endpoint = 'users?role=sales'
         sales_users = get_api_mixin(request, users_endpoint)
         form = f.ContractForm(sales_users['results'])
-        if request.user.role == 'sales':
+        if request.user.is_sales():
             form.fields['sale_contact'].widget = forms.HiddenInput()
             form.fields['sale_contact'].initial = request.user.id
         context = {'contract_form': form}

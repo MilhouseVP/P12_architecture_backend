@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>tout les clients</h2>
-    {% if user.role == 'sales' or user.role == 'manager'%}
+    {% if user.is_sales or user.is_manager%}
     <a href="{% url 'customer_create' %}"><button>Nouveau client</button></a>
     {% endif %}
 {% if error %}
