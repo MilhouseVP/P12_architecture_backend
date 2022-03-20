@@ -15,7 +15,7 @@
     <p>Création : {{ customer.date_created }}</p>
     <p> Dérnière modification : {{ customer.date_updated }}</p>
     <p>Déja client :
-        {% if client.existing %}
+        {% if customer.existing %}
         Oui
         {% else %}
         Non

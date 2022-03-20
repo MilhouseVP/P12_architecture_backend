@@ -7,7 +7,7 @@ class CustomerForm(forms.Form):
     Customer creation form, wich take a dict as an argmuent to display sales
     users return from API
     """
-    def __init__(self, sales, *args, **kwargs):
+    def __init__(self, sales=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.sales_choices = []
         for employee in sales:

@@ -67,8 +67,8 @@ class CreateCustomerSerializer(ModelSerializer):
     def create(self, validated_data):
         if not 'mobile' in validated_data:
             validated_data['mobile'] = None
-        user = self.context['request'].user
-        validated_data['sale_contact'] = user
+        # user = self.context['request'].user
+        # validated_data['sale_contact'] = user
         return Customer.objects.create(**validated_data)
 
 
@@ -152,7 +152,6 @@ class DetailContractSerializer(SaleMixin, ModelSerializer, CustomerMixin):
                   'event_created', 'date_updated', 'status', 'amount',
                   'payement_due', 'event')
 
-    #
     def get_event(self, instance):
         try:
             event = Event.objects.get(contract_id=instance.id)

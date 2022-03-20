@@ -14,7 +14,7 @@ class RegisterView(CreateAPIView):
     """
     Viewset for registering users
     """
-    permission_classes = [IsAuthenticated, perms.IsManager]
+    # permission_classes = [IsAuthenticated, perms.IsManager]
     queryset = CustomUser.objects.all()
     serializer_class = RegistrationSerializer
 
@@ -34,11 +34,11 @@ class UserViewset(ModelViewSet):
         :return: Booelans for each permissions in selected permission_classes
         """
         if self.action not in ['list', 'retrieve'] :
-            return self.edit_permissions
+            self.permission_classes = self.edit_permissions
         return super().get_permissions()
 
     def get_queryset(self):
-        return CustomUser.objects.all()
+        return CustomUser.objects.filter(is_superuser=False)
 
 
 class UpdatePassword(ModelViewSet):

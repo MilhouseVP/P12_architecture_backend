@@ -304,14 +304,15 @@ def customer_create(request):
     else:
         users_endpoint = 'users?role=sales'
         sales_users = get_api_mixin(request, users_endpoint)
-        form = f.CustomerEditForm(sales_users['results'])
+        form = f.CustomerEditForm(sales=sales_users['results'])
         endpoint = 'customers/'
         if request.user.is_sales():
             form.fields['sale_contact'].widget = forms.HiddenInput()
             form.fields['sale_contact'].initial = request.user.id
         context = {'customer_form': form}
         if request.method == 'POST':
-            customer_form = f.CustomerForm(request.POST)
+            customer_form = f.CustomerForm(sales_users['results'],
+                                           request.POST)
             if customer_form.is_valid():
                 data = customer_form.cleaned_data
                 result_data = post_api_mixin(request, body=data,
@@ -352,6 +353,8 @@ def customer_edit(request, edit_customer_id):
             for key in data:
                 try:
                     if key == 'sale_contact':
+                        form.fields[key].initial = data[key]['id']
+                    elif key == 'sale_contact':
                         form.fields[key].initial = data[key]['id']
                     else:
                         form.fields[key].initial = data[key]
@@ -530,17 +533,17 @@ def event_create(request, contract_id, customer_id):
         return redirect('home')
     else:
         users_endpoint = 'users?role=support'
-        sales_users = get_api_mixin(request, users_endpoint)
-        event_form = f.EventEditForm(sales_users['results'])
+        support_users = get_api_mixin(request, users_endpoint)
+        event_form = f.EventForm(support_users['results'])
         context = {'event_form': event_form}
         if request.method == 'POST':
             endpoint = 'events/'
-            event_form = f.EventForm(sales_users['results'], request.POST)
+            event_form = f.EventForm(support_users['results'], request.POST)
             if event_form.is_valid():
                 data = event_form.cleaned_data
                 body = {
                     'customer': customer_id,
-                    'support_contact': data['support_contact'].id,
+                    'support_contact': data['support_contact'],
                     'contract': contract_id,
                     'attendees': data['attendees'],
                     'event_date': data['event_date'],
@@ -587,6 +590,8 @@ def event_edit(request, edit_event_id):
                     if key == 'event_date':
                         event_form.fields[key].initial = datetime.strptime(
                             data[key], '%Y-%m-%dT%H:%M:%SZ')
+                    elif key == 'support_contact':
+                        event_form.fields[key].initial = data[key]['id']
                     else:
                         event_form.fields[key].initial = data[key]
                 except KeyError:
@@ -610,7 +615,10 @@ def users(request):
         if 'detail' in data:
             context = {'error': data['detail']}
         else:
-            context = {'users': data['results']}
+            paginator = Paginator(data['results'], 5)
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
+            context = {'instances': page_obj, 'users': True}
         return render(request, 'front/users.html', context)
 
 

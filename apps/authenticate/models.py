@@ -30,4 +30,4 @@ class CustomUser(AbstractUser):
         return self.groups.filter(name='sales').exists()
 
     def is_support(self):
-        return self.groups.fitler(name='support').exists()
+        return self.groups.filter(name='support').exists()

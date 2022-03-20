@@ -6,17 +6,12 @@ from django.contrib.auth.models import Group
 from .models import CustomUser
 
 
-class ListCustomUserSerializer(ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ('id', 'first_name', 'last_name', 'email', 'role')
-
 
 class DetailCustomUserSerializer(ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('id', 'first_name', 'last_name', 'email', 'phone', 'mobile',
-                  'role')
+                  'role', 'is_superuser')
 
 
 class EmbedCustomUserSerializer(ModelSerializer):
