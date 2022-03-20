@@ -14,7 +14,7 @@ class RegisterView(CreateAPIView):
     """
     Viewset for registering users
     """
-    # permission_classes = [IsAuthenticated, perms.IsManager]
+    permission_classes = [IsAuthenticated, perms.IsManager]
     queryset = CustomUser.objects.all()
     serializer_class = RegistrationSerializer
 
