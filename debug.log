@@ -1,3 +1,10 @@
 WARNING 2022-02-26 21:16:48,212 PATCH support1@test.test Forbidden: /api/customers/8/
 WARNING 2022-02-26 21:23:25,526 PATCH support1@test.test Forbidden: /api/customers/8/
 ERROR 2022-03-18 14:05:12,903 GET support1@test.test Internal Server Error: /home/
+WARNING 2022-03-21 16:03:18,264 GET  Not Found: /favicon.ico
+WARNING 2022-03-21 16:08:34,106 GET  Unauthorized: /api/password_update/
+WARNING 2022-03-21 16:09:00,436 GET support1@test.test Not Found: /api/customers/8/
+WARNING 2022-03-21 16:09:49,188 PATCH  Unauthorized: /api/password_update/
+WARNING 2022-03-21 16:18:23,550 GET support1@test.test Bad Request: /api/contracts/
+WARNING 2022-03-21 16:18:36,048 GET support1@test.test Bad Request: /api/contracts/
+WARNING 2022-03-21 16:28:08,642 PATCH support1@test.test Forbidden: /api/users/2/
