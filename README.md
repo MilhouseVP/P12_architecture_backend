@@ -38,6 +38,7 @@
 
 ## Paramètrage de la base de données :
 
+
 Le projet est paramètré pour utiliser une base de donnée PostgreSQL, avec les caracateristiques suivantes :
 
 > - database name : db_epicevents
@@ -45,7 +46,18 @@ Le projet est paramètré pour utiliser une base de donnée PostgreSQL, avec les
 > - db password : postgres
 
 
-## compte superuser et page d'administration :
+## Backup de test
+le fichier 'db_epicevents' est un backup de la base de données déjà peuplée, pour faciliter les tests.
+les differents comptes utilisateurs enregistrés et leurs mots de passe :
+> - support1@test.test : totototo1 
+> - support2@test.test : totototo1
+> - sales1@test.test : totototo1
+> - sales2@test.test : totototo1
+> - manager1@test.test : totototo1
+
+
+compte superuser et page d'administration :
+
 pour acceder à l'interface d'administration du site, connectez vous à l'url [127.0.0.1:8000/admin/](url) avec les identifiants suivant :
 >   - username : epicevents
 >   - password : epicevents
@@ -108,7 +120,7 @@ les filtres disponibles pour chaque endpoint :
   - ```http://127.0.0.1:8000/api/customers?email=<email>&&company=<société>```
 
 
-Pour les details de l'API, voir la documentation postman : 
+Pour les details de l'API, voir la documentation postman : [https://documenter.getpostman.com/view/17830367/UVsQsioA](url)
 
 # Application frontend :
 L'acces se fait par defaut à l'url [http://127.0.0.1:8000/](url)

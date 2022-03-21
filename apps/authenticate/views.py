@@ -7,6 +7,7 @@ from apps.authenticate.models import CustomUser
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 import P12_backend.permissions as perms
+from rest_framework.exceptions import MethodNotAllowed
 from .filters import UserFilter
 
 
@@ -39,6 +40,14 @@ class UserViewset(ModelViewSet):
 
     def get_queryset(self):
         return CustomUser.objects.filter(is_superuser=False)
+
+    def create(self, request, *args, **kwargs):
+        """
+        overridden method to block un-authorize request method
+        :return: updated context
+        """
+        raise MethodNotAllowed('POST', detail='Methode POST not allowed on '
+                                              'this endpoint')
 
 
 class UpdatePassword(ModelViewSet):

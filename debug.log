@@ -8,3 +8,7 @@ WARNING 2022-03-21 16:09:49,188 PATCH  Unauthorized: /api/password_update/
 WARNING 2022-03-21 16:18:23,550 GET support1@test.test Bad Request: /api/contracts/
 WARNING 2022-03-21 16:18:36,048 GET support1@test.test Bad Request: /api/contracts/
 WARNING 2022-03-21 16:28:08,642 PATCH support1@test.test Forbidden: /api/users/2/
+WARNING 2022-03-21 16:54:34,357 POST manager1@test.test Method Not Allowed: /api/users/
+WARNING 2022-03-21 17:03:10,325 GET manager1@test.test Not Found: /api/customers/8/
+WARNING 2022-03-21 17:04:49,249 GET  Not Found: /api/usersrole=sales
+WARNING 2022-03-21 17:43:56,211 GET epicevents Not Found: /favicon.ico
